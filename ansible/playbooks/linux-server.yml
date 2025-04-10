@@ -1,9 +1,17 @@
 - name: Configuring Linux Server
   hosts: server
   become: true
+  vars:
+    config_dir: "/mnt/media/config"
+    media_dir: "/mnt/media/media"
+    git_repo_url: "https://github.com/ConsularParadi/homelab.git"
+    compose_dir: "/mnt/media/homelab"
   tasks:
-    - name: "Install packages"
+    - name: "Install packages and dependencies"
       block:
+        - name: "Ensure Python dependencies for Ansible DNF module are installed (Fedora only)"
+          raw: "dnf install -y python3-libdnf5 python3-dnf"
+          when: ansible_distribution == "Fedora"
         - name: Update DNF cache
           ansible.builtin.dnf:
             update_cache: true
@@ -23,3 +31,60 @@
         - name: Enable lingering for rootless Podman
           ansible.builtin.command: loginctl enable-linger {{ ansible_user }}
           when: ansible_user != 'root'
+    - name: "set ENV variables"
+      block:
+        - name: "Add environment variables to /etc/environment"
+          ansible.builtin.lineinfile:
+            path: "/etc/environment"
+            line: "CONFIG_DIR={{ config_dir }}"
+            create: yes
+            state: present
+        - name: "Add MEDIA_DIR to /etc/environment"
+          ansible.builtin.lineinfile:
+            path: "/etc/environment"
+            line: "MEDIA_DIR={{ media_dir }}"
+            create: yes
+            state: present
+    - name: "Mount NAS through NFS and setup directories"
+      block:
+        - name: "Ensure NFS share is mounted"
+          ansible.builtin.mount:
+            src: "//192.168.29.39/media" # SMB share path
+            path: "/mnt/media" # Mount point on your machine
+            fstype: cifs
+            opts: "username=smb,password=smb,iocharset=utf8,vers=3.0,uid=1000,gid=1000"
+            state: mounted
+        - name: "Create directories on NAS share for Docker volumes"
+          become: false
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: directory
+            recurse: yes
+            mode: '0775'
+          loop:
+            - "{{ config_dir }}/jellyseerr"
+            - "{{ config_dir }}/qbittorrent"
+            - "{{ config_dir }}/jackett"
+            - "{{ config_dir }}/radarr"
+            - "{{ config_dir }}/sonarr"
+            - "{{ media_dir }}/downloads/torrents"
+            - "{{ media_dir }}/movies"
+            - "{{ media_dir }}/tv-shows"
+        - name: "Git clone the homelab repo"
+          ansible.builtin.git:
+            repo: "{{ git_repo_url }}"
+            dest: "{{ compose_dir }}"
+            clone: yes
+            update: yes
+        - name: "Find all subdirectories with compose.yml"
+          find:
+            paths: "{{ compose_dir }}"
+            patterns: "compose.yml"
+            recurse: yes
+          register: compose_files
+        - name: "Run podman-compose on each subdirectory"
+          command: "podman-compose up -d"
+          args:
+            chdir: "{{ item.path | dirname }}"
+          loop: "{{ compose_files.files }}"
+          when: compose_files.matched > 0

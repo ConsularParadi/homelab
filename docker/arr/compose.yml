@@ -1,0 +1,91 @@
+services:
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    ports:
+      - 31103:8080
+    volumes:
+      - ${CONFIG_DIR}/jellyseerr:/app/config
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Asia/Kolkata
+    restart: unless-stopped
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    ports:
+      - 31103:8080
+    volumes:
+      - ${CONFIG_DIR}/qbittorrent:/config
+      - ${MEDIA_DIR}/downloads/torrents:/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - WEBUI_PORT=8080
+    restart: unless-stopped
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    volumes:
+      - ${CONFIG_DIR}/prowlarr:/config
+      - ${MEDIA_DIR}/downloads/torrents:/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - AUTO_UPDATE=true #optional
+      #- RUN_OPTS= #optional
+    network_mode: container:gluetun
+    restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    ports:
+      - 31105:7878
+    volumes:
+      - ${CONFIG_DIR}/radarr:/config
+      - ${MEDIA_DIR}/downloads/torrents:/downloads
+      - ${MEDIA_DIR}/movies:/media
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    ports:
+      - 31106:8989
+    volumes:
+      - ${CONFIG_DIR}/sonarr:/config
+      - ${MEDIA_DIR}/downloads/torrents:/downloads
+      - ${MEDIA_DIR}/tv-shows:/media
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    restart: unless-stopped
+  #  prowlarr:
+  #    image: lscr.io/linuxserver/prowlarr:latest
+  #    container_name: prowlarr
+  #    environment:
+  #      - PUID=1000
+  #      - PGID=1000
+  #      - TZ=Asia/Kolkata
+  #    volumes:
+  #      - /home/consularparadi/Homelab/config/prowlarr:/config
+  #    restart: unless-stopped
+  #lidarr:
+  #  container_name: lidarr
+  #  image: lscr.io/linuxserver/lidarr:latest
+  #  restart: unless-stopped
+  #  environment:
+  #    - PUID=1000
+  #    - PGID=1000
+  #    - TZ=Asia/Kolkata
+  #  volumes:
+  #    - ../config/lidarr:/config
+  #    - ../../data:/data
+  #  ports:
+  #    - 31103:8686

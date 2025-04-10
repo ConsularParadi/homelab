@@ -43,3 +43,11 @@
             comment: "SMB Media Share"
             enabled: true
             state: present
+        - name: "Ensure correct permissions on the media directory"
+          become: true
+          ansible.builtin.file:
+            path: "/mnt/data/media"
+            owner: smb
+            group: users
+            mode: '0775'
+            recurse: yes
