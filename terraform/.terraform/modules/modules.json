@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"linux-server","Source":"./modules/proxmox-vm","Dir":"modules/proxmox-vm"},{"Key":"truenas","Source":"./modules/proxmox-vm","Dir":"modules/proxmox-vm"}]}

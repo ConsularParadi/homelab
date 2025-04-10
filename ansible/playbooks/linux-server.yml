@@ -1,0 +1,25 @@
+- name: Configuring Linux Server
+  hosts: server
+  become: true
+  tasks:
+    - name: "Install packages"
+      block:
+        - name: Update DNF cache
+          ansible.builtin.dnf:
+            update_cache: true
+        - name: Upgrade all packages
+          ansible.builtin.dnf:
+            name: '*'
+            state: latest
+        - name: Install Podman and essential tools
+          ansible.builtin.dnf:
+            name:
+              - podman
+              - podman-compose
+              - git
+              - curl
+              - wget
+            state: present
+        - name: Enable lingering for rootless Podman
+          ansible.builtin.command: loginctl enable-linger {{ ansible_user }}
+          when: ansible_user != 'root'

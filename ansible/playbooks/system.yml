@@ -1,0 +1,22 @@
+- name: "Common system settings"
+  hosts: nas
+  gather_facts: false
+  become: false
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  tasks:
+    - block:
+        - name: "Ensure .ssh directory exists"
+          file:
+            path: "/home/{{ ansible_user }}/.ssh"
+            state: directory
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
+            mode: '0700'
+        - name: "Add public key to authorized_keys"
+          authorized_key:
+            user: "{{ ansible_user }}"
+            state: present
+            key: "{{ lookup('file', '~/.ssh/homelab.pub') }}"
+      name: "Setup SSH on all machines"
+      when: ansible_user is defined

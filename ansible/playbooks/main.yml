@@ -1,0 +1,5 @@
+- name: "Ansible Entrypoint"
+  hosts: all
+  tasks:
+    - import_tasks: system.yaml
+    - import_tasks: truenas.yaml

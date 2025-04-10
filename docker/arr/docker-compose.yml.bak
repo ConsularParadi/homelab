@@ -1,0 +1,77 @@
+version: '3'
+services:
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Asia/Kolkata
+      #    network_mode: container:tailscale
+    #    networks:
+    #      - vpn
+    volumes:
+      - /home/consularparadi/Homelab/config/jellyseerr:/app/config
+    restart: unless-stopped
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      - WEBUI_PORT=8080
+      # network_mode: container:tailscale
+    #       networks:
+    #          - vpn
+
+    volumes:
+      - /home/consularparadi/Homelab/config/qbittorrent:/config
+      - /home/consularparadi/Homelab/media/downloads/torrents:/downloads
+    restart: unless-stopped
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      #network_mode: container:tailscale
+    #    networks:
+    #      - vpn
+    volumes:
+      - /home/consularparadi/Homelab/config/prowlarr:/config
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      #network_mode: container:tailscale
+    #    networks:
+    #      - vpn
+    volumes:
+      - /home/consularparadi/Homelab/config/sonarr:/config
+      - /home/consularparadi/Homelab/media:/media #optional
+      - /home/consularparadi/Homelab/media/downloads/torrents:/downloads #optional
+    restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+      #network_mode: container:tailscale
+    #    networks:
+    #      - vpn
+    volumes:
+      - /home/consularparadi/Homelab/config/radarr:/config
+      - /home/consularparadi/Homelab/media/movies:/media #optional
+      - /home/consularparadi/Homelab/media/downloads/torrents:/downloads #optional
+    restart: unless-stopped
+
+#networks:
+#  vpn:
+#    name: container:tailscale

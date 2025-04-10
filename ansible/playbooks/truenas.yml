@@ -1,0 +1,45 @@
+- name: "Setting up NAS"
+  hosts: truenas
+  gather_facts: false
+  tasks:
+    - name: "Set Hostname"
+      arensb.truenas.hostname:
+        name: notTrue
+    - name: "Creating filesystem for media share"
+      arensb.truenas.filesystem:
+        name: "data/media"
+        comment: "Media Storage on NAS"
+    - name: "Setting up NFS"
+      block:
+        - name: "Creating NFS user"
+          arensb.truenas.user:
+            name: nfs
+            comment: "NFS User"
+            group: users # singular `group`, not `groups`
+            password: "nfs"
+        - name: "Enable NFS service"
+          arensb.truenas.nfs:
+            allow_nonroot: true
+        - name: "Creating NFS share"
+          arensb.truenas.sharing_nfs:
+            path: "/mnt/data/media" # full path needed
+            comment: "NFS Media Share"
+            #alldirs: true
+            enabled: true
+            state: present
+    - name: "Setup SMB"
+      block:
+        - name: "Creating SMB user"
+          arensb.truenas.user:
+            name: smb
+            comment: "SMB User"
+            smb: true
+            group: users
+            password: "smb" # You should define this in vars/vault
+        - name: "Creating SMB share"
+          arensb.truenas.sharing_smb:
+            name: "media"
+            path: "/mnt/data/media"
+            comment: "SMB Media Share"
+            enabled: true
+            state: present

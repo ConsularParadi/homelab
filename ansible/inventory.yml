@@ -1,0 +1,15 @@
+all:
+  hosts:
+    proxmox:
+      ansible_host: 192.168.29.82
+      ansible_user: root
+    truenas:
+      ansible_host: 192.168.29.39
+      ansible_user: truenas_admin
+    linux-server:
+      ansible_host: 192.168.29.34
+      ansible_user: consular
+  children:
+    server:
+      hosts:
+        linux-server:

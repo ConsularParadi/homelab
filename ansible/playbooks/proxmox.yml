@@ -1,0 +1,47 @@
+- name: "Proxmox Setup"
+  hosts: proxmox
+  become: true
+  vars:
+    new_user: admin
+    user_password: "$6$BHsMUBiy51yPmUxf$UjqDukJ1bjC2sXw/tZzetWaA9D8oQvoJoICTHPHp.I/9mbOIzD1hPCoEwgjEjcF3x8abMFnSW.fldgAtQVxAS1" # Use vault for production
+    additional_packages:
+      - pve-headers
+      - open-iscsi
+  tasks:
+    - name: "Downloading ISOs and related files"
+      block:
+        - name: "Downloading Linux based ISOs"
+          get_url:
+            url: "{{ item.url }}"
+            dest: "/var/lib/vz/template/iso/{{ item.name }}"
+          loop:
+            - {url: "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Server/x86_64/iso/Fedora-Server-dvd-x86_64-41-1.4.iso", name: "fedora-server.iso"}
+            - {url: "https://channels.nixos.org/nixos-24.11/latest-nixos-minimal-x86_64-linux.iso", name: "nixos.iso"}
+    - name: "Install required packages"
+      apt:
+        name: "{{ additional_packages }}"
+        state: present
+        update_cache: true
+    - name: Create admin user
+      user:
+        name: "{{ new_user }}"
+        shell: /bin/bash
+        password: "{{ user_password }}"
+        groups: sudo
+        append: yes
+        state: present
+    - name: Allow passwordless sudo for admin user
+      copy:
+        dest: "/etc/sudoers.d/{{ new_user }}"
+        content: "{{ new_user }} ALL=(ALL) NOPASSWD:ALL"
+        mode: "0440"
+    - name: Remove Proxmox no-subscription nag banner
+      lineinfile:
+        path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+        regexp: 'Ext.Msg.show\({.*?title: gettext\("No valid subscription"'
+        state: absent
+        backrefs: yes
+      notify: Reload Proxmox UI
+  handlers:
+    - name: Reload Proxmox UI
+      shell: "systemctl restart pveproxy"
