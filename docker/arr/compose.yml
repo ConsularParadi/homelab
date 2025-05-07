@@ -1,42 +1,57 @@
 services:
   jellyseerr:
-    image: fallenbagel/jellyseerr:latest
+    image: docker.io/fallenbagel/jellyseerr:latest
     container_name: jellyseerr
     ports:
-      - 31103:8080
+      - 31101:5055
     volumes:
       - ${CONFIG_DIR}/jellyseerr:/app/config
     environment:
       - LOG_LEVEL=debug
       - TZ=Asia/Kolkata
     restart: unless-stopped
-  qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
-    container_name: qbittorrent
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
     ports:
-      - 31103:8080
+      - 31103:9091
+      - 51413:51413
+      - 51413:51413/udp
     volumes:
-      - ${CONFIG_DIR}/qbittorrent:/config
+      - ${CONFIG_DIR}/transmission:/config
       - ${MEDIA_DIR}/downloads/torrents:/downloads
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Kolkata
-      - WEBUI_PORT=8080
     restart: unless-stopped
-  jackett:
-    image: lscr.io/linuxserver/jackett:latest
-    container_name: jackett
-    volumes:
-      - ${CONFIG_DIR}/prowlarr:/config
-      - ${MEDIA_DIR}/downloads/torrents:/downloads
+#  jackett:
+#    image: lscr.io/linuxserver/jackett:latest
+#    container_name: jackett
+#    volumes:
+#      - ${CONFIG_DIR}/jackett:/config
+#      - ${MEDIA_DIR}/downloads/torrents:/downloads
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#      - TZ=Asia/Kolkata
+#      - AUTO_UPDATE=true #optional
+#      #- RUN_OPTS= #optional
+#    network_mode: "service:gluetun"
+#    restart: unless-stopped
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Kolkata
-      - AUTO_UPDATE=true #optional
-      #- RUN_OPTS= #optional
-    network_mode: container:gluetun
+    volumes:
+      - ${CONFIG_DIR}/bazarr:/config
+      - ${MEDIA_DIR}/movies:/movies
+      - ${MEDIA_DIR}/tv-shows:/tv
+    ports:
+      - 31107:6767
     restart: unless-stopped
   radarr:
     image: lscr.io/linuxserver/radarr:latest
