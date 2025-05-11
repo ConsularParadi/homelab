@@ -4,12 +4,12 @@ services:
     container_name: "traefik"
     ports:
       - "80:80"
-      - "443:443"
-      - "8080:8080"
+      #- "443:443"
+      - "31002:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "${CONFIG_DIR}/traefik/traefik.yml:/etc/traefik/traefik.yml:ro"
-      - "${CONFIG_DIR}/traefik/acme.json:/etc/traefik/acme.json"
+      #- "${CONFIG_DIR}/traefik/acme.json:/etc/traefik/acme.json"
     networks:
       - proxy
     restart: unless-stopped
@@ -17,28 +17,22 @@ services:
     image: adguard/adguardhome
     container_name: adguard
     volumes:
-      - ./adguard/work:/opt/adguardhome/work
-      - ./adguard/conf:/opt/adguardhome/conf
+      - "${CONFIG_DIR}/adguard/work:/opt/adguardhome/work"
+      - "${CONFIG_DIR}/adguard/conf:/opt/adguardhome/conf"
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "67:67/udp" # Optional: DHCP
-      - "853:853/tcp" # DNS-over-TLS
+      - "31001:3000"
+      #- "67:67/udp" # Optional: DHCP
+      #- "853:853/tcp" # DNS-over-TLS
     networks:
       - proxy
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.adguard.rule=Host(`dns.consular.home`)"
-      - "traefik.http.routers.adguard.entrypoints=websecure"
-      - "traefik.http.routers.adguard.tls=true"
-      - "traefik.http.services.adguard.loadbalancer.server.port=443"
-      - "traefik.http.routers.adguard.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.adguard-doh.rule=Host(`doh.consular.home`)"
-      - "traefik.http.routers.adguard-doh.entrypoints=websecure"
-      - "traefik.http.routers.adguard-doh.tls=true"
-      - "traefik.http.services.adguard-doh.loadbalancer.server.port=443"
-      - "traefik.http.routers.adguard-doh.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.adguard.entrypoints=web"
+      - "traefik.http.services.adguard.loadbalancer.server.port=3000"
 networks:
   proxy:
     name: "proxy"
