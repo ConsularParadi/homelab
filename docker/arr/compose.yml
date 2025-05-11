@@ -25,20 +25,37 @@ services:
       - PGID=1000
       - TZ=Asia/Kolkata
     restart: unless-stopped
-#  jackett:
-#    image: lscr.io/linuxserver/jackett:latest
-#    container_name: jackett
-#    volumes:
-#      - ${CONFIG_DIR}/jackett:/config
-#      - ${MEDIA_DIR}/downloads/torrents:/downloads
-#    environment:
-#      - PUID=1000
-#      - PGID=1000
-#      - TZ=Asia/Kolkata
-#      - AUTO_UPDATE=true #optional
-#      #- RUN_OPTS= #optional
-#    network_mode: "service:gluetun"
-#    restart: unless-stopped
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    ports:
+      - 31108:8080
+      - 6881:6881
+      - 6881:6881/udp
+    volumes:
+      - ${CONFIG_DIR}/qbittorent:/config
+      - ${MEDIA_DIR}/downloads/torrents:/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    restart: unless-stopped
+    #  jackett:
+    #    image: lscr.io/linuxserver/jackett:latest
+    #    container_name: jackett
+    #    volumes:
+    #      - ${CONFIG_DIR}/jackett:/config
+    #      - ${MEDIA_DIR}/downloads/torrents:/downloads
+    #    environment:
+    #      - PUID=1000
+    #      - PGID=1000
+    #      - TZ=Asia/Kolkata
+    #      - AUTO_UPDATE=true #optional
+    #      #- RUN_OPTS= #optional
+    #    network_mode: "service:gluetun"
+    #    restart: unless-stopped
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
