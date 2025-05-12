@@ -38,7 +38,7 @@ services:
     container_name: obsidian
     ports:
       - 31201:3000
-      #- 3001:3001 #HTTPS Port
+      - 3001:3001 #HTTPS Port
     volumes:
       - ${CONFIG_DIR}/obsidian:/config
     environment:
