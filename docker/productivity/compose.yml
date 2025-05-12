@@ -2,6 +2,10 @@ services:
   vikunja:
     image: vikunja/vikunja
     container_name: vikunja
+    ports:
+      - 31202:3456
+    volumes:
+      - "${CONFIG_DIR}/vikunja/files:/app/vikunja/files"
     environment:
       VIKUNJA_DATABASE_HOST: vikunja-db
       VIKUNJA_DATABASE_PASSWORD: changeme
@@ -9,10 +13,6 @@ services:
       VIKUNJA_DATABASE_USER: vikunja
       VIKUNJA_DATABASE_DATABASE: vikunja
       VIKUNJA_SERVICE_JWTSECRET: supersecret
-    ports:
-      - 3456:3456
-    volumes:
-      - ./files:/app/vikunja/files
     depends_on:
       db:
         condition: service_healthy
@@ -21,15 +21,33 @@ services:
     image: mariadb:10
     container_name: vikunja-db
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - "${CONFIG_DIR}/vikunja/db:/var/lib/mysql"
     environment:
       MYSQL_ROOT_PASSWORD: supersecret
       MYSQL_USER: vikunja
       MYSQL_PASSWORD: changeme
       MYSQL_DATABASE: vikunja
-    volumes:
-      - ./db:/var/lib/mysql
-    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD"]
       interval: 2s
       start_period: 30s
+    restart: unless-stopped
+  obsidian:
+    image: lscr.io/linuxserver/obsidian:latest
+    container_name: obsidian
+    ports:
+      - 31201:3000
+      #- 3001:3001 #HTTPS Port
+    volumes:
+      - ${CONFIG_DIR}/obsidian:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    security_opt:
+      - seccomp:unconfined #optional
+    #devices:
+    #  - /dev/dri:/dev/dri #optional
+    shm_size: "1gb"
+    restart: unless-stopped

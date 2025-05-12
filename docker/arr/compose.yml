@@ -59,16 +59,16 @@ services:
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
+    ports:
+      - 31107:6767
     volumes:
       - ${CONFIG_DIR}/bazarr:/config
       - ${MEDIA_DIR}/movies:/movies
       - ${MEDIA_DIR}/tv-shows:/tv
-    ports:
-      - 31107:6767
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
     restart: unless-stopped
   radarr:
     image: lscr.io/linuxserver/radarr:latest
