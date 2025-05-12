@@ -10,21 +10,21 @@ services:
       - LOG_LEVEL=debug
       - TZ=Asia/Kolkata
     restart: unless-stopped
-  transmission:
-    image: lscr.io/linuxserver/transmission:latest
-    container_name: transmission
-    ports:
-      - 31103:9091
-      - 51413:51413
-      - 51413:51413/udp
-    volumes:
-      - ${CONFIG_DIR}/transmission:/config
-      - ${MEDIA_DIR}/downloads/torrents:/downloads
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    restart: unless-stopped
+  #transmission:
+  #  image: lscr.io/linuxserver/transmission:latest
+  #  container_name: transmission
+  #  ports:
+  #    - 31103:9091
+  #    - 51413:51413
+  #    - 51413:51413/udp
+  #  volumes:
+  #    - ${CONFIG_DIR}/transmission:/config
+  #    - ${MEDIA_DIR}/downloads/torrents:/downloads
+  #  environment:
+  #    - PUID=1000
+  #    - PGID=1000
+  #    - TZ=Asia/Kolkata
+  #  restart: unless-stopped
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
