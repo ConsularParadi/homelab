@@ -40,7 +40,7 @@ services:
       - 31201:3000
       - 3001:3001 #HTTPS Port
     volumes:
-      - ${CONFIG_DIR}/obsidian:/config
+      - $../../config/obsidian:/config
     environment:
       - PUID=1000
       - PGID=1000
