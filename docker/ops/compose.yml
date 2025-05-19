@@ -22,5 +22,5 @@ services:
       - MYSQL_PASSWORD=gitea
       - MYSQL_DATABASE=gitea
     volumes:
-      - "${CONFIG_DIR}/gitea/db:/var/lib/mysql"
+      - "/mnt/media/gitea/db:/var/lib/mysql"
     restart: always
