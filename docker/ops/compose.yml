@@ -1,0 +1,15 @@
+services:
+  git:
+    image: docker.gitea.com/gitea:1.23.8
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    volumes:
+      - ./config:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "31003:3000"
+      - "31053:22"
+    restart: always
