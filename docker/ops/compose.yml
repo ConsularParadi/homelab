@@ -6,7 +6,7 @@ services:
       - USER_UID=1000
       - USER_GID=1000
     volumes:
-      - "${CONFIG_DIR}/gitea:/data"
+      - "/mnt/media/gitea:/data"
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
