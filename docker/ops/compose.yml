@@ -12,6 +12,8 @@ services:
     ports:
       - "31003:3000"
       - "31053:22"
+    networks:
+      - gitea
     restart: always
   db:
     image: docker.io/library/mysql:8
@@ -23,4 +25,9 @@ services:
       - MYSQL_DATABASE=gitea
     volumes:
       - "/mnt/media/gitea/db:/var/lib/mysql"
+    networks:
+      - gitea
     restart: always
+networks:
+  gitea:
+    external: false
