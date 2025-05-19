@@ -6,10 +6,21 @@ services:
       - USER_UID=1000
       - USER_GID=1000
     volumes:
-      - ./config:/data
+      - "${CONFIG_DIR}/gitea:/data"
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "31003:3000"
       - "31053:22"
+    restart: always
+  db:
+    image: docker.io/library/mysql:8
+    container_name: "gitea-db"
+    environment:
+      - MYSQL_ROOT_PASSWORD=gitea
+      - MYSQL_USER=gitea
+      - MYSQL_PASSWORD=gitea
+      - MYSQL_DATABASE=gitea
+    volumes:
+      - "${CONFIG_DIR}/gitea/db:/var/lib/mysql"
     restart: always
