@@ -1,0 +1,66 @@
+# Setup mounting of nas drive
+- name: Set role-specific variables
+  ansible.builtin.set_fact:
+    git_repo_url: "https://github.com/ConsularParadi/homelab.git"
+    clone_destination: "{{ ansible_facts['user_dir'] }}/homelab"
+    mount: "/mnt/nas"
+    config_dir: "{{ mount }}/config/config"
+    media_dir: "{{ mount }}/media/media"
+
+- name: Setup dependencies
+  block:
+    - name: Setup Docker
+      become: true
+      block:
+        - name: Ensure Docker package is installed
+          ansible.builtin.package:
+            name: docker
+            state: present
+          register: docker_install_result
+        - name: Ensure Docker service is started and enabled
+          ansible.builtin.service:
+            name: docker # The service name is usually 'docker'
+            state: started
+            enabled: true
+          when: docker_install_result is changed or docker_install_result is success
+    - name: Run all containers through docker compose files
+      become: false
+      vars:
+        git_repo_url: "https://github.com/ConsularParadi/homelab.git"
+        clone_destination: "{{ ansible_facts['user_dir'] }}/homelab"
+      block:
+        - name: Ensure git is installed
+          become: true
+          ansible.builtin.package:
+            name: git
+            state: present
+          register: git_install_result
+        - name: Clone homelab repo
+          ansible.builtin.git:
+            repo: " {{ git_repo_url }}"
+            dest: "{{ clone_destination }}"
+          when: git_install_result is changed or git_install_result is success
+          ---
+
+
+- name: Run docker containers
+  vars:
+    parent_compose_dir: "{{ clone_destination }}/docker"
+    mount: "/mnt/nas"
+    config_dir: "{{ mount }}/config/config"
+  block:
+    - name: Find all compose.yml files in subdirectories
+      ansible.builtin.find:
+        paths: "{{ parent_compose_dir }}"
+        patterns: "compose.yml"
+        depth: 2
+      register: compose_files
+
+    - name: Start each Docker Compose project
+      community.docker.docker_compose_v2:
+        project_src: "{{ item.path | dirname }}"
+        state: "present" 
+        env:
+          CONFIG_DIR: "{{ config_dir }}"
+          MEDIA_DIR: "{{ media_dir }}"
+      loop: "{{ compose_files.files }}"

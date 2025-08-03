@@ -15,7 +15,7 @@ services:
     networks:
       - gitea
     restart: always
-  db:
+  git-db:
     image: docker.io/library/mysql:8
     container_name: "gitea-db"
     environment:

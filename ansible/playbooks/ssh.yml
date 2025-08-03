@@ -1,0 +1,21 @@
+---
+- name: "Bootstrap SSH"
+  hosts: all
+  gather_facts: yes
+  become: no
+
+  tasks:
+    - block:
+      - name: "Ensure .ssh directory exists for {{ ansible_user }}"
+        ansible.builtin.file:
+          path: "{{ ansible_user_dir }}/.ssh"
+          state: directory
+          owner: "{{ ansible_user }}"
+          group: "{{ 'staff' if ansible_os_family == 'Darwin' else ansible_user }}" # On macOS, group is often 'staff' or the user's primary group ID.
+          mode: '0700'
+      
+      - name: "Add public key to authorized_keys for {{ ansible_user }}"
+        ansible.builtin.authorized_key:
+          user: "{{ ansible_user }}"
+          state: present
+          key: "{{ lookup('file', 'files/homelab.pub') }}"

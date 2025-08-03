@@ -1,0 +1,54 @@
+
+- name: "Setup yay package manager"
+  block:
+    - name: Install git
+      become: true
+      ansible.builtin.package: 
+        name: git
+        state: present
+    - name: Install go
+      become: true
+      ansible.builtin.package: 
+        name: go
+        state: present
+    - name: Check if yay is installed
+      ansible.builtin.include_tasks: checks.yml
+      vars:
+        pkg: yay
+    - name: Install yay on Arch Linux (if not found)
+      block:
+        - name: Clone yay AUR helper repository
+          ansible.builtin.git:
+            repo: 'https://aur.archlinux.org/yay.git'
+            dest: '/tmp/yay-install'
+          become: false # Clone as the current user
+    
+        #- name: Build yay
+        #  ansible.builtin.command: makepkg -s --noconfirm
+        #  args:
+        #    chdir: '/tmp/yay-install'
+        #  environment: # Ensure makepkg can find required tools like gcc, make etc.
+        #    PATH: "{{ ansible_facts.env.PATH }}:/usr/local/bin:/usr/bin:/bin"
+
+        - name: Find the built yay package file
+          ansible.builtin.find:
+            paths: "/tmp/yay-install"
+            patterns: "^(?!.*-debug-).*\\.pkg\\.tar\\.zst$"
+            use_regex: true # Crucial: tells find to interpret patterns as regex
+          register: yay_package_file
+          #when: yay_build_result is changed # Only search if build actually ran
+       
+        - name: Debug path
+          ansible.builtin.debug:
+            var: yay_package_file.files[0].path
+          when: yay_package_file.files is defined and yay_package_file.files | length > 0
+
+        - name: Install the built yay package
+          community.general.pacman:
+            name: "{{ yay_package_file.files[0].path }}" # Get the full path to the .pkg.tar.zst file
+            state: present
+          become: true # Needs sudo for pacman -U
+      when:
+        - check_package_result.rc != 0
+  when:
+    - ansible_os_family == "Archlinux"

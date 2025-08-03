@@ -1,0 +1,11 @@
+#- name: "Setup package manager"
+#  ansible.builtin.shell:
+#    cmd: "mkdir brew && curl -L https://github.com/Homebrew/brew/tarball/main | tar xz --strip-components 1 -C brew"
+#    chdir: "{{ ansible_facts['user_dir'] }}" # Or use a direct path like /Users/your_username
+#    creates: "{{ ansible_facts['user_dir'] }}/brew" # Or a direct path
+#  when: ansible_os_family == "Darwin"
+- name: "Base setup"
+  ansible.builtin.include_tasks: "{{ item }}"
+  loop:
+    - dotfiles.yml
+    - packages.yml

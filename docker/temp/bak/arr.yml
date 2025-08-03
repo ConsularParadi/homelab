@@ -1,0 +1,38 @@
+  #transmission:
+  #  image: lscr.io/linuxserver/transmission:latest
+  #  container_name: transmission
+  #  ports:
+  #    - 31103:9091
+  #    - 51413:51413
+  #    - 51413:51413/udp
+  #  volumes:
+  #    - ${CONFIG_DIR}/transmission:/config
+  #    - ${MEDIA_DIR}/downloads/torrents:/downloads
+  #  environment:
+  #    - PUID=1000
+  #    - PGID=1000
+  #    - TZ=Asia/Kolkata
+  #  restart: unless-stopped
+  #  prowlarr:
+  #    image: lscr.io/linuxserver/prowlarr:latest
+  #    container_name: prowlarr
+  #    environment:
+  #      - PUID=1000
+  #      - PGID=1000
+  #      - TZ=Asia/Kolkata
+  #    volumes:
+  #      - /home/consularparadi/Homelab/config/prowlarr:/config
+  #    restart: unless-stopped
+  #lidarr:
+  #  container_name: lidarr
+  #  image: lscr.io/linuxserver/lidarr:latest
+  #  restart: unless-stopped
+  #  environment:
+  #    - PUID=1000
+  #    - PGID=1000
+  #    - TZ=Asia/Kolkata
+  #  volumes:
+  #    - ../config/lidarr:/config
+  #    - ../../data:/data
+  #  ports:
+  #    - 31103:8686

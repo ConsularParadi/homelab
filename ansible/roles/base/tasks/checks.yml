@@ -1,0 +1,5 @@
+- name: Check if package {{ pkg }} is installed
+  ansible.builtin.command: "which {{ pkg }}"
+  register: check_package_result
+  ignore_errors: true
+  changed_when: false

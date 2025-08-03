@@ -1,0 +1,3 @@
+common_pkgs:
+  - test_package_from_var_file
+test_var: "Hello from all.yml"

@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   gluetun:
     image: docker.io/qmcgaw/gluetun
@@ -18,18 +16,9 @@ services:
       - WIREGUARD_PRIVATE_KEY=+OwDWPkQRyKwSubiAxhyETCnj8xEFQMCYHdtwye3UVk=
       - TZ=Asia/Kolkata
       - SERVER_COUNTRIES=Netherlands
-    pod: media-vpn
-
-  jackett:
-    image: lscr.io/linuxserver/jackett:latest
-    container_name: jackett
-    volumes:
-      - ${CONFIG_DIR}/jackett:/config
-      - ${MEDIA_DIR}/downloads/torrents:/downloads
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-      - AUTO_UPDATE=true
-    pod: media-vpn
-
+    networks:
+      - vpn
+networks:
+  vpn:
+    name: vpn
+    driver: bridge

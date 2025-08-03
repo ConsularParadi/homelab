@@ -1,0 +1,40 @@
+---
+- name: Sync dotfiles
+  become: false
+  vars:
+    git_repo_url: "https://github.com/ConsularParadi/dotfiles.git" 
+    clone_destination: "/tmp/dotfiles"
+    dot_dir: "{{ ansible_facts['user_dir'] }}/.config"
+  block:
+    - name: Set target branch based on OS family
+      ansible.builtin.set_fact:
+        version: >- # Using the YAML flow style for multi-line string
+          {% if ansible_os_family == 'Darwin' %}
+          macos
+          {% else %}
+          linux 
+          {% endif %}
+    - name: Clean up old dotfiles directory before clone
+      ansible.builtin.file:
+        path: "{{ clone_destination }}"
+        state: absent
+      become: false
+    - name: Clone dotfiles repo for {{ version }}
+      ansible.builtin.git:
+        repo: "{{ git_repo_url }}"
+        dest: "{{ clone_destination }}"
+        version: "{{ version }}" 
+        single_branch: false
+        update: true
+      register: git_clone_result # <--- Register the result here!
+
+    - name: Copy dotfiles at {{ dot_dir }}
+      ansible.builtin.copy:
+        src: "{{ clone_destination }}/"
+        dest: "{{ dot_dir}}/"
+        directory_mode: "0755"
+      when:
+        - git_clone_result.changed == true 
+     
+ 
+     

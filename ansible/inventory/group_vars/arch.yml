@@ -1,0 +1,9 @@
+---
+pkgs:
+  - firefox-bin
+  - greetd
+  - greetd-tuigreet
+  - niri
+  - rofi-wayland
+  - ghostty
+
