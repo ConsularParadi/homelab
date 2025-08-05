@@ -18,8 +18,6 @@ services:
   jackett:
     image: lscr.io/linuxserver/jackett:latest
     container_name: jackett
-    ports:
-      - 31104:9117
     volumes:
       - ${CONFIG_DIR}/jackett:/config
       - ${MEDIA_DIR}/downloads/torrents:/downloads
@@ -28,6 +26,7 @@ services:
       - PGID=1000
       - TZ=Asia/Kolkata
       - AUTO_UPDATE=true
+    network_mode: service:gluetun
     networks:
       - proxy
       - vpn
