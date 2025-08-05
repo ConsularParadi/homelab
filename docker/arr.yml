@@ -52,8 +52,7 @@ services:
       - 31105:7878
     volumes:
       - ${CONFIG_DIR}/radarr:/config
-      - ${MEDIA_DIR}/downloads/torrents:/downloads
-      - ${MEDIA_DIR}/movies:/media
+      - ${MEDIA_DIR}:/media
     environment:
       - PUID=1000
       - PGID=1000
@@ -68,8 +67,7 @@ services:
       - 31106:8989
     volumes:
       - ${CONFIG_DIR}/sonarr:/config
-      - ${MEDIA_DIR}/downloads/torrents:/downloads
-      - ${MEDIA_DIR}/tv-shows:/media
+      - ${MEDIA_DIR}:/media
     environment:
       - PUID=1000
       - PGID=1000
