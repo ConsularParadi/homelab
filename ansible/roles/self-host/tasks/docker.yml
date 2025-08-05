@@ -1,59 +1,57 @@
-# Setup mount
-- name: Set variables
+- name: Set base variables
   ansible.builtin.set_fact:
     git_repo_url: "https://github.com/ConsularParadi/homelab.git"
-    clone_destination: "{{ ansible_facts['user_dir'] }}/homelab"
     mount: "/mnt/nas"
-- name: Set variables
+    clone_destination: "{{ ansible_user_dir }}/homelab"
+- name: Set dependent variables
   ansible.builtin.set_fact:
     parent_compose_dir: "{{ clone_destination }}/docker"
     config_dir: "{{ mount }}/config/config"
     media_dir: "{{ mount }}/media/media"
 - name: Setup dependencies
   block:
-    - name: Setup Docker
+    - name: Ensure git is installed
+      ansible.builtin.package:
+        name: git
+        state: present
+    - name: Ensure Docker and Docker Compose Plugin are installed
+      ansible.builtin.package:
+        name:
+          - docker
+          - docker-compose
+        state: present
+    - name: Ensure Docker service is started and enabled
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+    - name: Ensure user is in the docker group for permissions
       become: true
-      block:
-        - name: Ensure Docker package and compose plugin is installed
-          ansible.builtin.package:
-            name:
-              - docker
-              - docker-compose
-            state: present
-          register: docker_install_result 
-        - name: Ensure Docker service is started and enabled
-          ansible.builtin.service:
-            name: docker # The service name is usually 'docker'
-            state: started
-            enabled: true
-          when: docker_install_result is changed or docker_install_result is success
-    - name: Run all containers through docker compose files
-      become: false
-      block:
-        - name: Ensure git is installed
-          become: true
-          ansible.builtin.package:
-            name: git
-            state: present
-          register: git_install_result
-        - name: Clone homelab repo
-          ansible.builtin.git:
-            repo: "{{ git_repo_url }}"
-            dest: "{{ clone_destination }}"
-          when: git_install_result is changed or git_install_result is success
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: true
 - name: Run docker containers
   block:
-    - name: Find all compose.yml files using the command module
-      ansible.builtin.command: "find {{ parent_compose_dir }} -maxdepth 2 -name 'compose.yml'"
+    - name: Clone homelab repo
+      ansible.builtin.git:
+        repo: "{{ git_repo_url }}"
+        dest: "{{ clone_destination }}"
+      become: false
+    - name: Find all compose files
+      ansible.builtin.find:
+        paths: "{{ parent_compose_dir }}"
+        patterns: "*.yml"
       register: compose_files_result
-    - name: Start each Docker Compose project
-      become: true
+    - name: Debug result
+      ansible.builtin.debug:
+        var: compose_files_result
+    - name: Deploy the Docker Compose stack
       community.docker.docker_compose_v2:
-        project_src: "{{ item | dirname }}"
+        project_src: "{{ parent_compose_dir }}"
+        files: "{{ compose_files_result.files | map(attribute='path') }}"
         state: "present"
       environment:
         CONFIG_DIR: "{{ config_dir }}"
         MEDIA_DIR: "{{ media_dir }}"
-      loop: "{{ compose_files_result.stdout_lines }}"
-      loop_control:
-        label: "{{ item | dirname }}"
+      become: true
