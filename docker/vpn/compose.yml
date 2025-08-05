@@ -6,8 +6,9 @@ services:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
-    #ports:
-#      - 31104:9117 # expose Jackett through Gluetun
+      #ports:
+    #      - 31104:9117 # expose Jackett through Gluetun
+
     volumes:
       - ${CONFIG_DIR}/gluetun:/gluetun
     environment:
@@ -20,5 +21,4 @@ services:
       - vpn
 networks:
   vpn:
-    name: vpn
-    driver: bridge
+    external: true

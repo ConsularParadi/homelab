@@ -1,0 +1,7 @@
+networks:
+  proxy:
+    name: proxy
+    driver: bridge
+  vpn:
+    name: vpn
+    driver: bridge
