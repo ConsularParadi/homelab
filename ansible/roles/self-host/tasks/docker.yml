@@ -1,22 +1,26 @@
-# Setup mounting of nas drive
-- name: Set role-specific variables
+# Setup mount
+- name: Set variables
   ansible.builtin.set_fact:
     git_repo_url: "https://github.com/ConsularParadi/homelab.git"
     clone_destination: "{{ ansible_facts['user_dir'] }}/homelab"
     mount: "/mnt/nas"
+- name: Set variables
+  ansible.builtin.set_fact:
+    parent_compose_dir: "{{ clone_destination }}/docker"
     config_dir: "{{ mount }}/config/config"
     media_dir: "{{ mount }}/media/media"
-
 - name: Setup dependencies
   block:
     - name: Setup Docker
       become: true
       block:
-        - name: Ensure Docker package is installed
+        - name: Ensure Docker package and compose plugin is installed
           ansible.builtin.package:
-            name: docker
+            name:
+              - docker
+              - docker-compose
             state: present
-          register: docker_install_result
+          register: docker_install_result 
         - name: Ensure Docker service is started and enabled
           ansible.builtin.service:
             name: docker # The service name is usually 'docker'
@@ -25,9 +29,6 @@
           when: docker_install_result is changed or docker_install_result is success
     - name: Run all containers through docker compose files
       become: false
-      vars:
-        git_repo_url: "https://github.com/ConsularParadi/homelab.git"
-        clone_destination: "{{ ansible_facts['user_dir'] }}/homelab"
       block:
         - name: Ensure git is installed
           become: true
@@ -37,30 +38,22 @@
           register: git_install_result
         - name: Clone homelab repo
           ansible.builtin.git:
-            repo: " {{ git_repo_url }}"
+            repo: "{{ git_repo_url }}"
             dest: "{{ clone_destination }}"
           when: git_install_result is changed or git_install_result is success
-          ---
-
-
 - name: Run docker containers
-  vars:
-    parent_compose_dir: "{{ clone_destination }}/docker"
-    mount: "/mnt/nas"
-    config_dir: "{{ mount }}/config/config"
   block:
-    - name: Find all compose.yml files in subdirectories
-      ansible.builtin.find:
-        paths: "{{ parent_compose_dir }}"
-        patterns: "compose.yml"
-        depth: 2
-      register: compose_files
-
+    - name: Find all compose.yml files using the command module
+      ansible.builtin.command: "find {{ parent_compose_dir }} -maxdepth 2 -name 'compose.yml'"
+      register: compose_files_result
     - name: Start each Docker Compose project
+      become: true
       community.docker.docker_compose_v2:
-        project_src: "{{ item.path | dirname }}"
-        state: "present" 
-        env:
-          CONFIG_DIR: "{{ config_dir }}"
-          MEDIA_DIR: "{{ media_dir }}"
-      loop: "{{ compose_files.files }}"
+        project_src: "{{ item | dirname }}"
+        state: "present"
+      environment:
+        CONFIG_DIR: "{{ config_dir }}"
+        MEDIA_DIR: "{{ media_dir }}"
+      loop: "{{ compose_files_result.stdout_lines }}"
+      loop_control:
+        label: "{{ item | dirname }}"
