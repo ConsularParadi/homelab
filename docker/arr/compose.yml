@@ -28,8 +28,6 @@ services:
       - AUTO_UPDATE=true
     networks:
       - vpn
-    depends_on:
-      - gluetun
   jellyseerr:
     image: docker.io/fallenbagel/jellyseerr:latest
     container_name: jellyseerr
