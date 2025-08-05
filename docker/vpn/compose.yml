@@ -6,7 +6,7 @@ services:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
-    ports:
+    #ports:
 #      - 31104:9117 # expose Jackett through Gluetun
     volumes:
       - ${CONFIG_DIR}/gluetun:/gluetun
