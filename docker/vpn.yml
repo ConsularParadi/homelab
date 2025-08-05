@@ -18,3 +18,4 @@ services:
       - SERVER_COUNTRIES=Netherlands
     networks:
       - vpn
+      - proxy

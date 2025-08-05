@@ -27,9 +27,6 @@ services:
       - TZ=Asia/Kolkata
       - AUTO_UPDATE=true
     network_mode: service:gluetun
-    networks:
-      - proxy
-      - vpn
   jellyseerr:
     image: docker.io/fallenbagel/jellyseerr:latest
     container_name: jellyseerr
