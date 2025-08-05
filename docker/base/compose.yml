@@ -1,3 +1,14 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONFIG_DIR}/portainer:/data
+    ports:
+      - 31003:9000
 networks:
   proxy:
     name: proxy
