@@ -17,5 +17,4 @@ services:
       - TZ=Asia/Kolkata
       - SERVER_COUNTRIES=Netherlands
     networks:
-      - vpn
       - proxy
