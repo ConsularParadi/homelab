@@ -40,7 +40,6 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-      - vpn
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr

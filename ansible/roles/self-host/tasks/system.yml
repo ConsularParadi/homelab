@@ -22,6 +22,7 @@
         enabled: true
         daemon_reload: true
 - name: Mount additional NAS drive
+  become: true
   block:
     - name: Ensure the mount point directory exists
       ansible.builtin.file:

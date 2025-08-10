@@ -1,3 +1,11 @@
+- name: Add NOPASSWD rule for yay and pacman
+  ansible.builtin.copy:
+    content: "consular ALL=(ALL) NOPASSWD: /usr/bin/yay, /usr/bin/pacman"
+    dest: /etc/sudoers.d/10-ansible-yay
+    owner: root
+    group: root
+    mode: '0440'
+  become: true
 - name: List common packages
   set_fact:
     common_pkgs:
@@ -48,7 +56,6 @@
   when: ansible_os_family == "Darwin"
 - name: Install common packages with Yay on Arch
   ansible.builtin.command: yay -S --needed --noconfirm {{ pkg }}
-  become: false
   loop: "{{ common_pkgs }}" # Loop over your list of packages
   loop_control:
     loop_var: pkg
@@ -57,7 +64,6 @@
   when: ansible_os_family == "Archlinux"
 - name: Install packages with Yay on Arch
   ansible.builtin.command: yay -S --needed --noconfirm {{ pkg }}
-  become: false
   loop: "{{ pkgs }}" # Loop over your list of packages
   loop_control:
     loop_var: pkg
