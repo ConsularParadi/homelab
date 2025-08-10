@@ -1,0 +1,19 @@
+services:
+  traefik:
+    image: "traefik:v3.4"
+    container_name: "traefik"
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+      #- "443:443"
+      - "31002:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "${CONFIG_DIR}/traefik/traefik.yml:/etc/traefik/traefik.yml:ro"
+      #- "${CONFIG_DIR}/traefik/acme.json:/etc/traefik/acme.json"
+    networks:
+      - proxy
+    restart: unless-stopped
