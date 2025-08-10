@@ -1,14 +1,13 @@
-
 - name: "Setup yay package manager"
   block:
     - name: Install git
       become: true
-      ansible.builtin.package: 
+      ansible.builtin.package:
         name: git
         state: present
     - name: Install go
       become: true
-      ansible.builtin.package: 
+      ansible.builtin.package:
         name: go
         state: present
     - name: Check if yay is installed
@@ -22,14 +21,12 @@
             repo: 'https://aur.archlinux.org/yay.git'
             dest: '/tmp/yay-install'
           become: false # Clone as the current user
-    
         #- name: Build yay
         #  ansible.builtin.command: makepkg -s --noconfirm
         #  args:
         #    chdir: '/tmp/yay-install'
         #  environment: # Ensure makepkg can find required tools like gcc, make etc.
         #    PATH: "{{ ansible_facts.env.PATH }}:/usr/local/bin:/usr/bin:/bin"
-
         - name: Find the built yay package file
           ansible.builtin.find:
             paths: "/tmp/yay-install"
@@ -37,12 +34,7 @@
             use_regex: true # Crucial: tells find to interpret patterns as regex
           register: yay_package_file
           #when: yay_build_result is changed # Only search if build actually ran
-       
-        - name: Debug path
-          ansible.builtin.debug:
-            var: yay_package_file.files[0].path
           when: yay_package_file.files is defined and yay_package_file.files | length > 0
-
         - name: Install the built yay package
           community.general.pacman:
             name: "{{ yay_package_file.files[0].path }}" # Get the full path to the .pkg.tar.zst file
@@ -52,3 +44,10 @@
         - check_package_result.rc != 0
   when:
     - ansible_os_family == "Archlinux"
+
+#- name: "Setup package manager"
+#  ansible.builtin.shell:
+#    cmd: "mkdir brew && curl -L https://github.com/Homebrew/brew/tarball/main | tar xz --strip-components 1 -C brew"
+#    chdir: "{{ ansible_facts['user_dir'] }}" # Or use a direct path like /Users/your_username
+#    creates: "{{ ansible_facts['user_dir'] }}/brew" # Or a direct path
+#  when: ansible_os_family == "Darwin"

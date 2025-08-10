@@ -20,12 +20,13 @@
   set_fact:
     casks:
       - ghostty
+      - tigervnc-viewer
       - zen
 - name: List linux GUI apps
   set_fact:
     pkgs:
       - ghostty
-      - firefox
+      - zen-browser-bin
 - name: Install common packages with Homebrew on macOS
   become: false
   community.general.homebrew:
@@ -47,7 +48,7 @@
   when: ansible_os_family == "Darwin"
 - name: Install common packages with Yay on Arch
   ansible.builtin.command: yay -S --needed --noconfirm {{ pkg }}
-  become: true
+  become: false
   loop: "{{ common_pkgs }}" # Loop over your list of packages
   loop_control:
     loop_var: pkg
@@ -56,7 +57,7 @@
   when: ansible_os_family == "Archlinux"
 - name: Install packages with Yay on Arch
   ansible.builtin.command: yay -S --needed --noconfirm {{ pkg }}
-  become: true
+  become: false
   loop: "{{ pkgs }}" # Loop over your list of packages
   loop_control:
     loop_var: pkg

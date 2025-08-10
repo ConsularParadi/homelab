@@ -1,19 +1,19 @@
----
+- name: Install rsync
+  become: true
+  ansible.builtin.package:
+    name: rsync
+    state: present
 - name: Sync dotfiles
   become: false
   vars:
-    git_repo_url: "https://github.com/ConsularParadi/dotfiles.git" 
+    git_repo_url: "https://github.com/ConsularParadi/dotfiles.git"
     clone_destination: "/tmp/dotfiles"
     dot_dir: "{{ ansible_facts['user_dir'] }}/.config"
   block:
     - name: Set target branch based on OS family
       ansible.builtin.set_fact:
         version: >- # Using the YAML flow style for multi-line string
-          {% if ansible_os_family == 'Darwin' %}
-          macos
-          {% else %}
-          linux 
-          {% endif %}
+          {% if ansible_os_family == 'Darwin' %} macos {% else %} linux  {% endif %}
     - name: Clean up old dotfiles directory before clone
       ansible.builtin.file:
         path: "{{ clone_destination }}"
@@ -23,18 +23,46 @@
       ansible.builtin.git:
         repo: "{{ git_repo_url }}"
         dest: "{{ clone_destination }}"
-        version: "{{ version }}" 
+        version: "{{ version }}"
         single_branch: false
         update: true
       register: git_clone_result # <--- Register the result here!
-
-    - name: Copy dotfiles at {{ dot_dir }}
-      ansible.builtin.copy:
-        src: "{{ clone_destination }}/"
-        dest: "{{ dot_dir}}/"
-        directory_mode: "0755"
+    - name: Sync configuration
+      block:
+        - name: Copy dotfiles at {{ dot_dir }}
+          ansible.builtin.synchronize:
+            src: "{{ clone_destination }}/"
+            dest: "{{ dot_dir}}/"
+            archive: yes
+          delegate_to: "{{ inventory_hostname }}"
+        - name: Copy system configuration
+          when: ansible_os_family == "Archlinux"
+          become: true
+          block:
+            - name: Copy dotfiles at /etc
+              synchronize:
+                src: "{{ ansible_facts['user_dir'] }}/.config/sys/"
+                dest: "/etc/"
+                archive: yes
+                rsync_opts:
+                  - "--exclude=systemd"
+              delegate_to: "{{ inventory_hostname }}"
+            - name: Setup systemd services
+              block:
+                - name: Copy systemd services to /etc/systemd/system
+                  ansible.builtin.copy:
+                    src: "{{ ansible_facts['user_dir'] }}/.config/sys/systemd/"
+                    dest: "/etc/systemd/system/"
+                    remote_src: yes
+                    directory_mode: "0755"
+                  register: copy_result # Register the result of the copy task
+                - name: Enable and start systemd services
+                  when: copy_result.changed
+                  ansible.builtin.systemd:
+                    name: "{{ item | basename }}"
+                    daemon_reload: yes
+                    state: started
+                    enabled: yes
+                  loop: "{{ lookup('fileglob', ansible_facts['user_dir'] + '/.config/sys/systemd/*.service') }}"
       when:
-        - git_clone_result.changed == true 
-     
- 
-     
+        - git_clone_result.changed == true

@@ -1,0 +1,28 @@
+- name: Setting up WM
+  become: true
+  block:
+    - name: List packages
+      set_fact:
+        pkgs:
+          - greetd
+          - greetd-tuigreet
+          - niri
+          - rofi-wayland
+          - swaylock
+          - swww
+          - waybar
+          - wayvnc
+          - wlogout-bin
+    - name: Install packages with Yay on Arch
+      ansible.builtin.command: yay -S --needed --noconfirm {{ pkg }}
+      loop: "{{ pkgs }}" # Loop over your list of packages
+      loop_control:
+        loop_var: pkg
+      register: yay_install_result
+      changed_when: "'installed' in yay_install_result.stdout or 'cloning' in yay_install_result.stdout"
+    - name: Ensure Greetd service is started and enabled
+      ansible.builtin.service:
+        name: greetd
+        state: started
+        enabled: true
+  when: ansible_os_family == "Archlinux"

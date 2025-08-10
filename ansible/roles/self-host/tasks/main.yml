@@ -1,4 +1,5 @@
 - name: "Setup self-hosted services"
   ansible.builtin.include_tasks: "{{ item }}"
   loop:
+    - system.yml
     - docker.yml
