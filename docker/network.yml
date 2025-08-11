@@ -15,7 +15,8 @@ services:
     # Uncomment this if IPv6 is not enabled on your host
     # DISABLE_IPV6: 'true'
     volumes:
-      - ./data:/data
+      - "${CONFIG_DIR}/npm/data:/data"
+      - "${CONFIG_DIR}/npm/letsencrypt:/etc/letsencrypt"
     networks:
       - proxy
     restart: unless-stopped
