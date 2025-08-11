@@ -1,22 +1,43 @@
 services:
-  traefik:
-    image: "traefik:v3.4"
-    container_name: "traefik"
-    command:
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:80
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
     ports:
-      - "80:80"
-      #- "443:443"
-      - "31002:8080"
+      - '80:80' # Public HTTP Port
+      - '443:443' # Public HTTPS Port
+      - '31002:81' # Admin Web Port
+      # Add any other Stream port you want to expose
+      # - '21:21' # FTP
+    #environment:
+    # Uncomment this if you want to change the location of
+    # the SQLite DB file within the container
+    # DB_SQLITE_FILE: "/data/database.sqlite"
+
+    # Uncomment this if IPv6 is not enabled on your host
+    # DISABLE_IPV6: 'true'
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "${CONFIG_DIR}/traefik/traefik.yml:/etc/traefik/traefik.yml:ro"
-      #- "${CONFIG_DIR}/traefik/acme.json:/etc/traefik/acme.json"
+      - ./data:/data
     networks:
       - proxy
     restart: unless-stopped
+  #traefik:
+  #  image: "traefik:v3.4"
+  #  container_name: "traefik"
+  #  command:
+  #    - --providers.docker=true
+  #    - --providers.docker.exposedbydefault=false
+  #    - --entrypoints.web.address=:80
+  #  ports:
+  #    - "80:80"
+  #    #- "443:443"
+  #    - "31002:8080"
+  #  volumes:
+  #    - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #    - "${CONFIG_DIR}/traefik/traefik.yml:/etc/traefik/traefik.yml:ro"
+  #    #- "${CONFIG_DIR}/traefik/acme.json:/etc/traefik/acme.json"
+  #  networks:
+  #    - proxy
+  #  restart: unless-stopped
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
