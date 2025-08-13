@@ -43,7 +43,6 @@
         paths: "{{ parent_compose_dir }}"
         patterns: "*.yml"
       register: compose_files_result
-    - name: Debug result
     - name: Deploy the Docker Compose stack
       community.docker.docker_compose_v2:
         project_src: "{{ parent_compose_dir }}"
