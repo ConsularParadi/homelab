@@ -51,7 +51,7 @@ services:
       - ${CONFIG_DIR}/lidarr:/config
       - ${MEDIA_DIR}:/media
     ports:
-      - 31107:8686
+      - 31109:8686
     networks:
       - proxy
     restart: unless-stopped
