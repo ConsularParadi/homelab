@@ -11,6 +11,7 @@ services:
       - ${CONFIG_DIR}/jellyfin:/config
       - ${MEDIA_DIR}/tv-shows:/data/tvshows
       - ${MEDIA_DIR}/movies:/data/movies
+      - ${MEDIA_DIR}/music:/data/music
       #    ports:
       #      - 31102:8096
       #      - 8920:8920 #optional
