@@ -40,21 +40,6 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-  lidarr:
-    image: lscr.io/linuxserver/lidarr:latest
-    container_name: lidarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    volumes:
-      - ${CONFIG_DIR}/lidarr:/config
-      - ${MEDIA_DIR}:/media
-    ports:
-      - 31109:8686
-    networks:
-      - proxy
-    restart: unless-stopped
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
@@ -85,22 +70,6 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-  soulseek:
-    image: realies/soulseek
-    container_name: soulseek
-    restart: unless-stopped
-    volumes:
-      - ${CONFIG_DIR}/soulseek:/data/.SoulseekQt
-      - "${MEDIA_DIR}/downloads/soulseek:/data/Soulseek Downloads"
-      #- /persistent/logs:/data/Soulseek Chat Logs
-      - "${MEDIA_DIR}/music:/data/Soulseek Shared Folder"
-    environment:
-      - PGID=1000
-      - PUID=1000
-    ports:
-      - 31110:6080
-      - 61122:61122 # example listening port, check Options -> Login
-      - 61123:61123 # example obfuscated port, check Options -> Login
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
