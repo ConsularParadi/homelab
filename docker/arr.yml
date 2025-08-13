@@ -93,7 +93,7 @@ services:
       - 6881:6881
       - 6881:6881/udp
     volumes:
-      - ${CONFIG_DIR}/qbittorent:/config
+      - ${CONFIG_DIR}/qbittorrent:/config
       - ${MEDIA_DIR}/downloads/torrents:/downloads
     environment:
       - PUID=1000
