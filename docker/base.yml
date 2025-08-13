@@ -11,11 +11,11 @@ services:
       - proxy
       #    ports:
       #      - 31003:9000
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.home.arpa`)"
-      - "traefik.http.routers.portainer.entrypoints=web"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.portainer.rule=Host(`portainer.home.arpa`)"
+#      - "traefik.http.routers.portainer.entrypoints=web"
+#      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 networks:
   proxy:
     name: proxy

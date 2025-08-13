@@ -2,10 +2,14 @@ services:
   traefik:
     image: "traefik:v3.4"
     container_name: "traefik"
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
     ports:
       - "80:80"
       #- "443:443"
-      - "31002:8080"
+      #- "31002:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "${CONFIG_DIR}/traefik/traefik.yml:/etc/traefik/traefik.yml:ro"
@@ -13,6 +17,11 @@ services:
     networks:
       - proxy
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.proxy.rule=Host(`proxy.home.arpa`)"
+      - "traefik.http.routers.proxy.entrypoints=web"
+      - "traefik.http.services.proxy.loadbalancer.server.port=8080"
   adguard:
     image: adguard/adguardhome
     container_name: adguard

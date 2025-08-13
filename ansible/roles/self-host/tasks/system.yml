@@ -38,9 +38,10 @@
         fstype: ext4 # Replace with your filesystem type (e.g., btrfs, xfs)
         state: mounted
         opts: defaults,nofail
-- name: Setup tailscale VPN
-  include_role:
-    name: artis3n.tailscale.machine
-  vars:
-    state: present
-    tailscale_authkey: tskey-auth-kqZme9th5521CNTRL-WenT5sN7hwHuBGNwEu7NxHQMu4ZaLXAn5
+
+#- name: Setup tailscale VPN
+#  include_role:
+#    name: artis3n.tailscale.machine
+#  vars:
+#    state: present
+#    tailscale_authkey: tskey-auth-kqZme9th5521CNTRL-WenT5sN7hwHuBGNwEu7NxHQMu4ZaLXAn5
