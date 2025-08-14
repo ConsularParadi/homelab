@@ -1,0 +1,10 @@
+services:
+  quartz:
+    image: consular/quartz
+    container_name: quartz
+    ports:
+      - "31201:8080"
+      - "31251:3001"
+    volumes:
+      - ${MEDIA_DIR}/notes:/usr/src/app/content
+    restart: unless-stopped
