@@ -12,11 +12,11 @@ services:
       - ${MEDIA_DIR}/tv-shows:/data/tvshows
       - ${MEDIA_DIR}/movies:/data/movies
       - ${MEDIA_DIR}/music:/data/music
-      #    ports:
-      #      - 31102:8096
-      #      - 8920:8920 #optional
-      #      - 7359:7359/udp #optional
-      #      - 1900:1900/udp #optional
+    ports:
+      - 31102:8096
+    #      - 8920:8920 #optional
+    #      - 7359:7359/udp #optional
+    #      - 1900:1900/udp #optional
     networks:
       - proxy
   navidrome:
@@ -31,7 +31,7 @@ services:
       - ${CONFIG_DIR}/navidrome:/data
       - ${MEDIA_DIR}/music:/music:ro
     ports:
-      - "31102:4533"
+      - "31111:4533"
     networks:
       - proxy
     user: 1000:1000
