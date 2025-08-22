@@ -1,0 +1,4 @@
+- name: "Gaming setup"
+  ansible.builtin.include_tasks: "{{ item }}"
+  loop:
+    - system.yml

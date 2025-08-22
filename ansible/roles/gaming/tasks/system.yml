@@ -1,0 +1,28 @@
+- name: Install gaming dependencies on Arch Linux
+  become: true
+  block:
+    - name: List dependencies
+      set_fact:
+        pkgs:
+          #- protontricks
+          - protonup-qt-bin
+          - proton-ge
+          - gamescope
+          - gamemode
+          - lib32-gamemode
+          - goverlay
+          - mangohud
+          - lutris
+          - umu-launcher
+          - power-profiles-daemon
+          #- wine-staging
+          - wine-gecko
+          - openrgb
+    - name: Install packages
+      ansible.builtin.command: yay -S --needed --noconfirm {{ pkg }}
+      loop: "{{ pkgs }}" # Loop over your list of packages
+      loop_control:
+        loop_var: pkg
+      register: yay_install_result
+      changed_when: "'installed' in yay_install_result.stdout or 'cloning' in yay_install_result.stdout"
+  when: ansible_os_family == "Archlinux"

@@ -2,5 +2,8 @@
   ansible.builtin.include_tasks: "{{ item }}"
   loop:
     - dotfiles.yml
-    - packages.yml
-    - wm.yml
+
+#    - system.yml
+#    - dotfiles.yml
+#    - packages.yml
+#    - wm.yml

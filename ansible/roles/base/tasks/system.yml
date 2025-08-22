@@ -1,0 +1,21 @@
+- name: Setup Nvidia GPU on Arch Linux
+  become: true
+  block:
+    - name: List packages
+      set_fact:
+        pkgs:
+          - linux-zen
+          - linux-zen-headers
+          - nvidia-dkms
+          - nvidia-utils
+          - lib32-nvidia-utils
+          - nvidia-settings
+          - nvidia-container-toolkit
+    - name: Install packages
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ pkgs }}"
+    - name: Reboot system
+      ansible.builtin.reboot:
+  when: ansible_os_family == "Archlinux"
