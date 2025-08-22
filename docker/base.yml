@@ -34,6 +34,26 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       HOMEPAGE_ALLOWED_HOSTS: "*" #gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
+  guacd:
+    container_name: guacd
+    image: guacamole/guacd
+    restart: unless-stopped
+    networks:
+      - proxy
+    ports:
+      - "31054:4822"
+  guacamole:
+    container_name: guacamole
+    image: guacamole/guacamole
+    restart: unless-stopped
+    networks:
+      - proxy
+    ports:
+      - "31004:8080"
+    links:
+      - guacd
+    depends_on:
+      - guacd
 networks:
   proxy:
     name: proxy
