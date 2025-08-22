@@ -5,6 +5,7 @@
       set_fact:
         pkgs:
           #- protontricks
+          - sunshine-bin
           - protonup-qt-bin
           - proton-ge
           - gamescope
@@ -25,4 +26,13 @@
         loop_var: pkg
       register: yay_install_result
       changed_when: "'installed' in yay_install_result.stdout or 'cloning' in yay_install_result.stdout"
+    - name: Set cap_sys_admin+p capability on the sunshine executable
+      ansible.builtin.command:
+        cmd: "setcap cap_sys_admin+p $(readlink -f $(which sunshine))"
+    - name: Start the Sunshine user service
+      become: no
+      ansible.builtin.systemd_service:
+        name: sunshine
+        state: started
+        scope: user
   when: ansible_os_family == "Archlinux"

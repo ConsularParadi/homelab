@@ -7,12 +7,12 @@
   #    HOMEBREW_NO_AUTO_UPDATE: 1
   roles:
     - base
-#- name: "Setup Homelab"
-#  hosts: homelab
-#  gather_facts: yes
-#  become: no
-#  roles:
-#    - self-host
+- name: "Setup Homelab"
+  hosts: homelab
+  gather_facts: yes
+  become: no
+  roles:
+    - self-host
 - name: "Setup Gaming Rig"
   hosts: gaming
   gather_facts: yes

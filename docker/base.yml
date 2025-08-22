@@ -15,9 +15,7 @@ services:
       homepage.group: Meta
       homepage.name: Portainer
       homepage.icon: portainer.png
-      homepage.href:
-        - "http://portainer.home.arpa"
-        - "http://${IP_ADDR}:${PORTAINER_PORT}"
+      homepage.href: "http://${IP_ADDR}:${PORTAINER_PORT}"
       homepage.description: "Container Management"
   #      - "traefik.enable=true"
   #      - "traefik.http.routers.portainer.rule=Host(`portainer.home.arpa`)"
