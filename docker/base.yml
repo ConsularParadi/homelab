@@ -36,24 +36,49 @@ services:
       HOMEPAGE_ALLOWED_HOSTS: "*" #gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
   guacd:
     container_name: guacd
-    image: guacamole/guacd
-    restart: unless-stopped
+    image: guacamole/guacd:1.6.0
     networks:
       - proxy
-    ports:
-      - "31054:4822"
+    restart: always
+    volumes:
+      - ./drive:/drive:rw
+      - ./record:/record:rw
+  postgres:
+    container_name: postgres_guacamole
+    environment:
+      PGDATA: /var/lib/postgresql/data/guacamole
+      POSTGRES_DB: guacamole_db
+      POSTGRES_PASSWORD: 'Hello@1234'
+      POSTGRES_USER: guacamole_user
+    image: postgres:15.2-alpine
+    networks:
+      - proxy
+    restart: always
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d:z
+      - ./data:/var/lib/postgresql/data:Z
   guacamole:
     container_name: guacamole
-    image: guacamole/guacamole
-    restart: unless-stopped
-    networks:
-      - proxy
-    ports:
-      - "31004:8080"
-    links:
-      - guacd
+    group_add:
+      - "1000"
     depends_on:
       - guacd
+      - postgres
+    environment:
+      GUACD_HOSTNAME: guacd
+      POSTGRESQL_DATABASE: guacamole_db
+      POSTGRESQL_HOSTNAME: postgres
+      POSTGRESQL_PASSWORD: 'Hello@1234'
+      POSTGRESQL_USERNAME: guacamole_user
+      RECORDING_SEARCH_PATH: /record
+    image: guacamole/guacamole:1.6.0
+    networks:
+      - proxy
+    volumes:
+      - ./record:/record:rw
+    ports:
+      - 31004:8080/tcp
+    restart: always
 networks:
   proxy:
     name: proxy
