@@ -48,6 +48,7 @@
         project_src: "{{ parent_compose_dir }}"
         files: "{{ compose_files_result.files | map(attribute='path') }}"
         state: "present"
+        remove_orphans: true
       environment:
         CONFIG_DIR: "{{ config_dir }}"
         MEDIA_DIR: "{{ media_dir }}"
