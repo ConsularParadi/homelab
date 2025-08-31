@@ -102,8 +102,6 @@ services:
       - ${CONFIG_DIR}/tdarr/logs:/app/logs
       - ${CONFIG_DIR}/tdarr/temp:/temp
       - ${MEDIA_DIR}:/media
-    devices:
-      - /dev/dri:/dev/dri
     deploy:
       resources:
         reservations:
