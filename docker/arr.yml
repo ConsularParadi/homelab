@@ -70,7 +70,6 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-  version: "3.4"
   tdarr:
     container_name: tdarr
     image: ghcr.io/haveagitgat/tdarr:latest
