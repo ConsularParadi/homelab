@@ -104,13 +104,6 @@ services:
       - ${CONFIG_DIR}/tdarr/transcode_cache:/temp
     devices:
       - /dev/dri:/dev/dri
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
