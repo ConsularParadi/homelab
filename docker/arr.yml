@@ -70,23 +70,47 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-  fileflows:
-    image: revenz/fileflows
+  tdarr:
+    container_name: tdarr
+    image: ghcr.io/haveagitgat/tdarr:latest
     restart: unless-stopped
-    runtime: nvidia
+    network_mode: bridge
     ports:
-      - "31110:5000"
+      - 31110:8265 # webUI port
+      - 31160:8266 # server port
     environment:
-      - TempPathHost=/mnt/nas/config/config/tdarr/temp
-      - TZ=Asia/Kolkata
-      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+      - TZ=Europe/London
+      #- PUID=${PUID}
+      #- PGID=${PGID}
+      - UMASK_SET=002
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - webUIPort=8265
+      - internalNode=true
+      - inContainer=true
+      - ffmpegVersion=7
+      - nodeName=MyInternalNode
+      - auth=false
+      - openBrowser=true
+      - maxLogSizeMB=10
+      - cronPluginUpdate=
+      - NVIDIA_DRIVER_CAPABILITIES=all
       - NVIDIA_VISIBLE_DEVICES=all
     volumes:
-      - ${CONFIG_DIR}/fileflows/logs:/app/logs
-      - ${CONFIG_DIR}/fileflows/temp:/temp
-      - ${CONFIG_DIR}/fileflows/common:/app/common
-      - ${MEDIA_DIR}:/app/Data
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONFIG_DIR}/tdarr/server:/app/server
+      - ${CONFIG_DIR}/tdarr/configs:/app/configs
+      - ${CONFIG_DIR}/tdarr/logs:/app/logs
+      - ${MEDIA_DIR}:/media
+      - ${CONFIG_DIR}/tdarr/transcode_cache:/temp
+    devices:
+      - /dev/dri:/dev/dri
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
