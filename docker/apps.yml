@@ -4,7 +4,7 @@ services:
     ports:
       - 31203:7500
     volumes:
-      - /home/john/Documents/paisa/:/root/Documents/paisa/
+      - "${CONFIG_DIR}/paisa:/root/Documents/paisa"
     restart: unless-stopped
   quartz:
     image: consular/quartz
