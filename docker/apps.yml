@@ -6,6 +6,8 @@ services:
     volumes:
       - "${CONFIG_DIR}/paisa:/root/Documents/paisa"
     restart: unless-stopped
+    networks:
+      - proxy
   quartz:
     image: consular/quartz
     container_name: quartz
