@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-  db:
+  vikunja-db:
     image: mariadb:10
     container_name: vikunja-db
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -57,3 +57,20 @@ services:
     restart: unless-stopped
     networks:
       - proxy
+    services:
+  zen:
+    image: lscr.io/linuxserver/zen:latest
+    container_name: zen-browser
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - "${CONFIG_DIR}/zen:/config"
+    ports:
+      - 3000:3000
+      - 31203:3001
+    shm_size: "1gb"
+    restart: unless-stopped
