@@ -57,7 +57,6 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-    services:
   zen:
     image: lscr.io/linuxserver/zen:latest
     container_name: zen-browser
