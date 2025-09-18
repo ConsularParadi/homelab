@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-  vikunja-db:
+  db:
     image: mariadb:10
     container_name: vikunja-db
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
