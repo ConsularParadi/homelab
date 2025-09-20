@@ -41,6 +41,7 @@ services:
       - TZ=Asia/Kolkata
     restart: unless-stopped
     networks:
+      - proxy
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
