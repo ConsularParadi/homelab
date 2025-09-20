@@ -7,7 +7,7 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - 31104:9117 # expose Jackett through Gluetun
+      - 31108:9117 # expose Jackett through Gluetun
     volumes:
       - ${CONFIG_DIR}/gluetun:/gluetun
     environment:
