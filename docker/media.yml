@@ -11,14 +11,19 @@ services:
       - ${CONFIG_DIR}/jellyfin:/config
       - ${MEDIA_DIR}/tv-shows:/data/tvshows
       - ${MEDIA_DIR}/movies:/data/movies
-      - ${MEDIA_DIR}/music:/data/music
     ports:
-      - 31102:8096
+      - ${JELLYFIN_PORT}:8096
     #      - 8920:8920 #optional
     #      - 7359:7359/udp #optional
     #      - 1900:1900/udp #optional
     networks:
       - proxy
+    labels:
+      homepage.group: Media
+      homepage.name: Jellyfin
+      homepage.icon: jellyfin.png
+      homepage.href: "http://${IP_ADDR}:${JELLYFIN_PORT}"
+      homepage.description: "Media Server"
   navidrome:
     container_name: navidrome
     image: deluan/navidrome:latest
@@ -31,8 +36,14 @@ services:
       - ${CONFIG_DIR}/navidrome:/data
       - ${MEDIA_DIR}/music:/music:ro
     ports:
-      - "31111:4533"
+      - "${MUSIC_PORT}:4533"
     networks:
       - proxy
     user: 1000:1000
     restart: unless-stopped
+    labels:
+      homepage.group: Media
+      homepage.name: Navidrome
+      homepage.icon: navidrome.png
+      homepage.href: "http://${IP_ADDR}:${MUSIC_PORT}"
+      homepage.description: "Music Server"

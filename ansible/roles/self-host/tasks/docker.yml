@@ -6,8 +6,8 @@
 - name: Set dependent variables
   ansible.builtin.set_fact:
     parent_compose_dir: "{{ clone_destination }}/docker"
-    config_dir: "{{ mount }}/config/config"
-    media_dir: "{{ mount }}/media/media"
+    config_dir: "{{ mount }}/config"
+    media_dir: "{{ mount }}/media"
 - name: Setup dependencies
   block:
     - name: Ensure git is installed

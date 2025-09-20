@@ -1,9 +1,51 @@
 services:
+  jellyseerr:
+    image: docker.io/fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    ports:
+      - ${JELLYSEERR_PORT}:5055
+    volumes:
+      - ${CONFIG_DIR}/jellyseerr:/app/config
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Asia/Kolkata
+    restart: unless-stopped
+    networks:
+      - proxy
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    ports:
+      - ${RADARR_PORT}:7878
+    volumes:
+      - ${CONFIG_DIR}/radarr:/config
+      - ${MEDIA_DIR}:/media
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    restart: unless-stopped
+    networks:
+      - proxy
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    ports:
+      - ${SONARR_PORT}:8989
+    volumes:
+      - ${CONFIG_DIR}/sonarr:/config
+      - ${MEDIA_DIR}:/media
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    restart: unless-stopped
+    networks:
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     ports:
-      - 31107:6767
+      - ${BAZARR_PORT}:6767
     volumes:
       - ${CONFIG_DIR}/bazarr:/config
       - ${MEDIA_DIR}/movies:/movies
@@ -27,88 +69,11 @@ services:
       - TZ=Asia/Kolkata
       - AUTO_UPDATE=true
     network_mode: service:gluetun
-  jellyseerr:
-    image: docker.io/fallenbagel/jellyseerr:latest
-    container_name: jellyseerr
-    ports:
-      - 31101:5055
-    volumes:
-      - ${CONFIG_DIR}/jellyseerr:/app/config
-    environment:
-      - LOG_LEVEL=debug
-      - TZ=Asia/Kolkata
-    restart: unless-stopped
-    networks:
-      - proxy
-  radarr:
-    image: lscr.io/linuxserver/radarr:latest
-    container_name: radarr
-    ports:
-      - 31105:7878
-    volumes:
-      - ${CONFIG_DIR}/radarr:/config
-      - ${MEDIA_DIR}:/media
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    restart: unless-stopped
-    networks:
-      - proxy
-  sonarr:
-    image: lscr.io/linuxserver/sonarr:latest
-    container_name: sonarr
-    ports:
-      - 31106:8989
-    volumes:
-      - ${CONFIG_DIR}/sonarr:/config
-      - ${MEDIA_DIR}:/media
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    restart: unless-stopped
-    networks:
-      - proxy
-  tdarr:
-    container_name: tdarr
-    image: ghcr.io/haveagitgat/tdarr:latest
-    restart: unless-stopped
-    network_mode: bridge
-    ports:
-      - 31110:8265 # webUI port
-      - 31160:8266 # server port
-    environment:
-      - TZ=Europe/London
-      #- PUID=${PUID}
-      #- PGID=${PGID}
-      - UMASK_SET=002
-      - serverIP=0.0.0.0
-      - serverPort=8266
-      - webUIPort=8265
-      - internalNode=true
-      - inContainer=true
-      - ffmpegVersion=7
-      - nodeName=MyInternalNode
-      - auth=false
-      - openBrowser=true
-      - maxLogSizeMB=10
-      - cronPluginUpdate=
-      - NVIDIA_DRIVER_CAPABILITIES=all
-      - NVIDIA_VISIBLE_DEVICES=all
-    volumes:
-      - ${CONFIG_DIR}/tdarr/server:/app/server
-      - ${CONFIG_DIR}/tdarr/configs:/app/configs
-      - ${CONFIG_DIR}/tdarr/logs:/app/logs
-      - ${MEDIA_DIR}:/media
-      - ${CONFIG_DIR}/tdarr/transcode_cache:/temp
-    devices:
-      - /dev/dri:/dev/dri
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     ports:
-      - 31108:8080
+      - ${TORRENT_PORT}:8080
       - 6881:6881
       - 6881:6881/udp
     volumes:
@@ -123,3 +88,37 @@ services:
     restart: unless-stopped
     networks:
       - proxy
+    #  tdarr:
+    #    container_name: tdarr
+    #    image: ghcr.io/haveagitgat/tdarr:latest
+    #    restart: unless-stopped
+    #    network_mode: bridge
+    #    ports:
+    #      - 31110:8265 # webUI port
+    #      - 31160:8266 # server port
+    #    environment:
+    #      - TZ=Europe/London
+    #      #- PUID=${PUID}
+    #      #- PGID=${PGID}
+    #      - UMASK_SET=002
+    #      - serverIP=0.0.0.0
+    #      - serverPort=8266
+    #      - webUIPort=8265
+    #      - internalNode=true
+    #      - inContainer=true
+    #      - ffmpegVersion=7
+    #      - nodeName=MyInternalNode
+    #      - auth=false
+    #      - openBrowser=true
+    #      - maxLogSizeMB=10
+    #      - cronPluginUpdate=
+    #      - NVIDIA_DRIVER_CAPABILITIES=all
+    #      - NVIDIA_VISIBLE_DEVICES=all
+    #    volumes:
+    #      - ${CONFIG_DIR}/tdarr/server:/app/server
+    #      - ${CONFIG_DIR}/tdarr/configs:/app/configs
+    #      - ${CONFIG_DIR}/tdarr/logs:/app/logs
+    #      - ${MEDIA_DIR}:/media
+    #      - ${CONFIG_DIR}/tdarr/transcode_cache:/temp
+    #    devices:
+    #      - /dev/dri:/dev/dri

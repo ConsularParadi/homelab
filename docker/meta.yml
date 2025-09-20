@@ -1,4 +1,26 @@
 services:
+  git:
+    image: codeberg.org/forgejo/forgejo:12
+    container_name: forgejo
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    networks:
+      - proxy
+    volumes:
+      - ${CONFIG_DIR}/forgejo:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '${GIT_PORT}:3000'
+      - '${GIT_SSH_PORT}:22'
+    labels:
+      homepage.group: Meta
+      homepage.name: Forgejo
+      homepage.icon: forgejo.png
+      homepage.href: "http://${IP_ADDR}:${GIT_PORT}"
+      homepage.description: "Self hosted Git"
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
@@ -28,7 +50,7 @@ services:
     networks:
       - proxy
     ports:
-      - 31000:3000
+      - ${HOMEPAGE_PORT}:3000
     volumes:
       - ${CONFIG_DIR}/homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock
@@ -40,7 +62,13 @@ services:
     volumes:
       - ${CONFIG_DIR}/guacamole:/config
     ports:
-      - 31004:8080
+      - ${GUACAMOLE_PORT}:8080
+    labels:
+      homepage.group: Meta
+      homepage.name: Guacamole
+      homepage.icon: guacamole.png
+      homepage.href: "http://${IP_ADDR}:${GUACAMOLE_PORT}"
+      homepage.description: "Access to server UI"
 networks:
   proxy:
     name: proxy
