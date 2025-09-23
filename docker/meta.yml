@@ -1,16 +1,16 @@
 services:
-  dind:
-    image: docker:28.3.3-dind@sha256:c0872aae4791ff427e6eda52769afa04f17b5cf756f8267e0d52774c99d5c9de
-    container_name: forgejo-dind
-    privileged: true
-    restart: unless-stopped
-    command: ["dockerd", "-H", "tcp://0.0.0.0:2375", "--tls=false"]
+  docker-in-docker:
+    image: docker:dind
+    container_name: 'docker_dind'
+    privileged: 'true'
+    command: ['dockerd', '-H', 'tcp://0.0.0.0:2375', '--tls=false']
+    restart: 'unless-stopped'
   runner:
-    image: code.forgejo.org/forgejo/runner:9.0.3@sha256:9ae7e65c14e7d49549432cbbbb2ed95e5e04ede234feb28bfd70a2dc04385263
+    image: 'data.forgejo.org/forgejo/runner:11'
     links:
-      - dind
+      - docker-in-docker
     depends_on:
-      dind:
+      docker-in-docker:
         condition: service_started
     container_name: forgejo-runner
     user: 1000:1000
