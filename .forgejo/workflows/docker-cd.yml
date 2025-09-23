@@ -9,13 +9,18 @@ jobs:
   deploy-docker-stack:
     runs-on: docker
     container:
-      image: docker/compose:latest
-      options: --privileged # Required to access the Docker daemon on the host
+      image: node:20-alpine
+      options: --privileged
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock # Mount the host's Docker socket
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Pull and deploy new Docker stack
         run: |
+          # The Docker CLI needs to be installed in the Node.js image
+          apk add --no-cache docker-cli docker-compose
+
           cd docker
-          docker compose pull
-          docker compose up -d --remove-orphans
+          docker-compose pull
+          docker-compose up -d --remove-orphans
