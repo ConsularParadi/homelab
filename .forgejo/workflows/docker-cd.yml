@@ -23,4 +23,4 @@ jobs:
 
           cd docker
           docker-compose pull
-          docker-compose up -d --remove-orphans
+          docker compose $(printf " -f %s" *.yml) up -d
