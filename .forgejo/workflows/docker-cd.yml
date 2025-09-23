@@ -8,6 +8,9 @@ on:
 jobs:
   deploy-docker-stack:
     runs-on: docker
+    container:
+      image: docker/compose:latest
+      options: --privileged # Required to access the Docker daemon on the host
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
