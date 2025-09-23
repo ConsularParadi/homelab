@@ -16,7 +16,7 @@ services:
     image: ghcr.io/kimdre/doco-cd:latest
     restart: unless-stopped
     ports:
-      - "31055:80"
+      - "31056:80"
       #- "9120:9120" # Prometheus metrics
     environment:
       TZ: Asia/Kolkata
