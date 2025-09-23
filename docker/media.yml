@@ -68,4 +68,4 @@ services:
       homepage.name: Audiobookshelf
       homepage.icon: audiobookshelf.png
       homepage.href: "http://${IP_ADDR}:${BOOKS_PORT}"
-      homepage.description: "Books & Podcasts Server"
+      homepage.description: "Books and Podcasts Server"
