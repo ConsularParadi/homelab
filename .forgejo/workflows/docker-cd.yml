@@ -1,19 +1,16 @@
+name: Docker CI/CD
 on:
   push:
     branches:
-      - main:
+      - main
     paths:
       - 'docker/**'
 jobs:
   deploy-docker-stack:
-    runs-on: docker
+    runs-on: self-hosted # The host that is running your runner container
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        #      - name: Install Docker Compose
-        #        run: |
-        #          apt-get update
-        #          apt-get install -y docker-compose-plugin
       - name: Pull and deploy new Docker stack
         run: |
           cd docker
