@@ -15,7 +15,7 @@ services:
     container_name: forgejo-runner
     user: 1000:1000
     environment:
-      DOCKER_HOST: tcp://dind:2375
+      DOCKER_HOST: tcp://docker-in-docker:2375
     volumes:
       - ${CONFIG_DIR}/forgejo/runner/data:/data
       - ${CONFIG_DIR}/forgejo/runner/config.yml:/config.yaml
