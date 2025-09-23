@@ -22,5 +22,4 @@ jobs:
           apk add --no-cache docker-cli docker-compose
 
           cd docker
-          docker-compose pull
           docker compose $(printf " -f %s" *.yml) up -d
