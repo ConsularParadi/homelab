@@ -1,0 +1,17 @@
+on:
+  push:
+    branches:
+      - main:
+    paths:
+      - 'docker/**'
+jobs:
+  deploy-docker-stack:
+    runs-on: homelab
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Pull and deploy new Docker stack
+        run: |
+          cd docker
+          docker-compose pull
+          docker-compose up -d --remove-orphans
