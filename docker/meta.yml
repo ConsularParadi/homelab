@@ -1,16 +1,29 @@
 services:
-  runner:
-    image: 'data.forgejo.org/forgejo/runner:11'
-    container_name: forgejo-runner
-    user: 1000:1000
+  #  runner:
+  #    image: 'data.forgejo.org/forgejo/runner:11'
+  #    container_name: forgejo-runner
+  #    user: 1000:1000
+  #    environment:
+  #      DOCKER_HOST: unix:///var/run/docker.sock
+  #    volumes:
+  #      - /var/run/docker.sock:/var/run/docker.sock
+  #      - ${CONFIG_DIR}/forgejo/runner/data:/data
+  #      - ${CONFIG_DIR}/forgejo/runner/config.yml:/config.yaml
+  #    restart: unless-stopped
+  #    command: '/bin/sh -c "while : ; do sleep 1 ; done ;"'
+  docker-cd:
+    container_name: docker-cd
+    image: ghcr.io/kimdre/doco-cd:latest
+    restart: unless-stopped
+    ports:
+      - "31055:80"
+      #- "9120:9120" # Prometheus metrics
     environment:
-      DOCKER_HOST: unix:///var/run/docker.sock
+      TZ: Asia/Kolkata
+      WEBHOOK_SECRET: "xyz"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${CONFIG_DIR}/forgejo/runner/data:/data
-      - ${CONFIG_DIR}/forgejo/runner/config.yml:/config.yaml
-    restart: unless-stopped
-    command: '/bin/sh -c "while : ; do sleep 1 ; done ;"'
+      - ${CONFIG_DIR}/doco-cd:/data
   git:
     image: codeberg.org/forgejo/forgejo:12
     container_name: forgejo
