@@ -21,7 +21,7 @@ services:
     container_name: paperless-ngx
     restart: unless-stopped
     depends_on:
-      - broker
+      - paperless-redis
     ports:
       - "31204:8000"
     networks:
