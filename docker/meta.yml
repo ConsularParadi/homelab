@@ -1,29 +1,4 @@
 services:
-  #  runner:
-  #    image: 'data.forgejo.org/forgejo/runner:11'
-  #    container_name: forgejo-runner
-  #    user: 1000:1000
-  #    environment:
-  #      DOCKER_HOST: unix:///var/run/docker.sock
-  #    volumes:
-  #      - /var/run/docker.sock:/var/run/docker.sock
-  #      - ${CONFIG_DIR}/forgejo/runner/data:/data
-  #      - ${CONFIG_DIR}/forgejo/runner/config.yml:/config.yaml
-  #    restart: unless-stopped
-  #    command: '/bin/sh -c "while : ; do sleep 1 ; done ;"'
-  docker-cd:
-    container_name: docker-cd
-    image: ghcr.io/kimdre/doco-cd:latest
-    restart: unless-stopped
-    ports:
-      - "31056:80"
-      #- "9120:9120" # Prometheus metrics
-    environment:
-      TZ: Asia/Kolkata
-      WEBHOOK_SECRET: "xyz"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${CONFIG_DIR}/doco-cd:/data
   git:
     image: codeberg.org/forgejo/forgejo:12
     container_name: forgejo
@@ -64,36 +39,36 @@ services:
       homepage.icon: portainer.png
       homepage.href: "http://${IP_ADDR}:${PORTAINER_PORT}"
       homepage.description: "Container Management"
-  #      - "traefik.enable=true"
-  #      - "traefik.http.routers.portainer.rule=Host(`portainer.home.arpa`)"
-  #      - "traefik.http.routers.portainer.entrypoints=web"
-  #      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      #      - "traefik.enable=true"
+      #      - "traefik.http.routers.portainer.rule=Host(`portainer.home.arpa`)"
+      #      - "traefik.http.routers.portainer.entrypoints=web"
+      #      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+#homepage:
+#  image: ghcr.io/gethomepage/homepage:latest
+#  container_name: homepage
+#  networks:
+#    - proxy
+#  ports:
+#    - ${HOMEPAGE_PORT}:3000
+#  volumes:
+#    - ${CONFIG_DIR}/homepage:/app/config
+#    - /var/run/docker.sock:/var/run/docker.sock
+#  environment:
+#    HOMEPAGE_ALLOWED_HOSTS: "*" #gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
+#guacamole:
+#  image: oznu/guacamole
+#  container_name: guacamole
+#  volumes:
+#    - ${CONFIG_DIR}/guacamole:/config
+#  ports:
+#    - ${GUACAMOLE_PORT}:8080
+#  labels:
+#    homepage.group: Meta
+#    homepage.name: Guacamole
+#    homepage.icon: guacamole.png
+#    homepage.href: "http://${IP_ADDR}:${GUACAMOLE_PORT}"
+#    homepage.description: "Access to server UI"
 
-  homepage:
-    image: ghcr.io/gethomepage/homepage:latest
-    container_name: homepage
-    networks:
-      - proxy
-    ports:
-      - ${HOMEPAGE_PORT}:3000
-    volumes:
-      - ${CONFIG_DIR}/homepage:/app/config
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      HOMEPAGE_ALLOWED_HOSTS: "*" #gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
-  guacamole:
-    image: oznu/guacamole
-    container_name: guacamole
-    volumes:
-      - ${CONFIG_DIR}/guacamole:/config
-    ports:
-      - ${GUACAMOLE_PORT}:8080
-    labels:
-      homepage.group: Meta
-      homepage.name: Guacamole
-      homepage.icon: guacamole.png
-      homepage.href: "http://${IP_ADDR}:${GUACAMOLE_PORT}"
-      homepage.description: "Access to server UI"
 networks:
   proxy:
     name: proxy
