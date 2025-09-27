@@ -29,7 +29,6 @@ services:
     volumes:
       - data:
       - "${CONFIG_DIR}/paperless:/usr/src/paperless/data"
-      - media:/usr/src/paperless/media
       - "${CONFIG_DIR}/paperless/export:/usr/src/paperless/export"
       - "${CONFIG_DIR}/paperless/consume:/usr/src/paperless/consume"
     #env_file: docker-compose.env
