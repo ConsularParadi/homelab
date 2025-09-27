@@ -27,7 +27,7 @@ services:
     networks:
       - proxy
     volumes:
-      - data:
+      - "${MEDIA_DIR}/docs:/usr/src/paperless/media"
       - "${CONFIG_DIR}/paperless:/usr/src/paperless/data"
       - "${CONFIG_DIR}/paperless/export:/usr/src/paperless/export"
       - "${CONFIG_DIR}/paperless/consume:/usr/src/paperless/consume"
