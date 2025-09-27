@@ -35,7 +35,7 @@ services:
     environment:
       PAPERLESS_REDIS: redis://paperless-redis:6379
   quartz:
-    image: consular/quartz
+    image: shommey/dockerized-quartz
     container_name: quartz
     ports:
       - "31201:8080"
