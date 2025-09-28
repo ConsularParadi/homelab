@@ -1,8 +1,8 @@
 services:
   gluetun:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: docker.io/qmcgaw/gluetun
     container_name: gluetun
     cap_add:

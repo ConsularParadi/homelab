@@ -1,8 +1,8 @@
 services:
   jellyseerr:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: docker.io/fallenbagel/jellyseerr:latest
     container_name: jellyseerr
     ports:
@@ -19,9 +19,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${JELLYSEERR_PORT}"
       homepage.description: "Media Request Manager"
   radarr:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     ports:
@@ -40,9 +40,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${RADARR_PORT}"
       homepage.description: "Movie Collection Manager"
   sonarr:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     ports:
@@ -61,9 +61,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${SONARR_PORT}"
       homepage.description: "TV Series Manager"
   bazarr:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     ports:
@@ -102,9 +102,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${GLUETUN_JACKETT_PORT}"
       homepage.description: "Indexer Proxy"
   qbittorrent:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     ports:

@@ -1,8 +1,8 @@
 services:
   homepage:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     ports:
@@ -13,9 +13,9 @@ services:
     environment:
       HOMEPAGE_ALLOWED_HOSTS: "*" #gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
   guacamole:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: oznu/guacamole
     container_name: guacamole
     volumes:

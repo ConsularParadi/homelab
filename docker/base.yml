@@ -1,8 +1,12 @@
+networks:
+  proxy:
+    driver: bridge
+
 services:
   git:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: codeberg.org/forgejo/forgejo:12
     container_name: forgejo
     environment:
@@ -23,9 +27,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${GIT_PORT}"
       homepage.description: "Self hosted Git"
   portainer:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: portainer/portainer-ce:latest
     container_name: portainer
     volumes:

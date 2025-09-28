@@ -1,8 +1,8 @@
 services:
   paisa:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     container_name: paisa
     image: ananthakumaran/paisa:latest
     ports:
@@ -16,17 +16,17 @@ services:
       homepage.href: "http://${IP_ADDR}:${PAISA_PORT}"
       homepage.description: "Personal Finance Manager"
   paperless-redis:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: docker.io/library/redis:8
     container_name: paperless-redis
     volumes:
       - "${CONFIG_DIR}/paperless/redis:/data"
   paperless:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     container_name: paperless-ngx
     depends_on:
@@ -48,9 +48,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${PAPERLESS_PORT}"
       homepage.description: "Document Management System"
   quartz:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: shommey/dockerized-quartz
     container_name: quartz
     ports:
@@ -65,9 +65,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${QUARTZ_PORT_8080}"
       homepage.description: "Digital Garden"
   vikunja:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: vikunja/vikunja
     container_name: vikunja
     ports:
@@ -91,9 +91,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${VIKUNJA_PORT}"
       homepage.description: "To-do List Application"
   db:
-    extends:
-      file: common.yml
-      service: common
+    restart: unless-stopped
+    networks:
+      - proxy
     image: mariadb:10
     container_name: vikunja-db
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

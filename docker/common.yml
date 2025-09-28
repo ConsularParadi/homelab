@@ -1,12 +1,6 @@
 # common.yml
 # Defines a common service to be extended by other services.
 #
-networks:
-  proxy:
-    driver: bridge
-services:
-  common:
-    restart: unless-stopped
-    networks:
-      - proxy
+
+
 
