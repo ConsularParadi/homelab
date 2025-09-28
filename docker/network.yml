@@ -1,6 +1,8 @@
 services:
   npm:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     container_name: npm
     image: 'jc21/nginx-proxy-manager:latest'
     ports:
@@ -26,7 +28,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${PROXY_PORT}"
       homepage.description: "Proxy Manager"
   pihole:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     container_name: pihole
     image: pihole/pihole:latest
     ports:

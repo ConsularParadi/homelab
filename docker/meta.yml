@@ -1,6 +1,8 @@
 services:
   homepage:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     ports:
@@ -11,7 +13,9 @@ services:
     environment:
       HOMEPAGE_ALLOWED_HOSTS: "*" #gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
   guacamole:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: oznu/guacamole
     container_name: guacamole
     volumes:

@@ -1,6 +1,8 @@
 services:
   jellyfin:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     environment:
@@ -23,7 +25,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${JELLYFIN_PORT}"
       homepage.description: "Media Server"
   navidrome:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     container_name: navidrome
     image: deluan/navidrome:latest
     environment:
@@ -44,7 +48,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${MUSIC_PORT}"
       homepage.description: "Music Server"
   audiobookshelf:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     container_name: audiobookshelf
     image: ghcr.io/advplyr/audiobookshelf:latest
     ports:

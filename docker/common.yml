@@ -1,7 +1,8 @@
 # common.yml
-# Defines common properties to be reused across services.
+# Defines a common service to be extended by other services.
 
-x-common-properties: &common-properties
-  restart: unless-stopped
-  networks:
-    - proxy
+services:
+  common:
+    restart: unless-stopped
+    networks:
+      - proxy

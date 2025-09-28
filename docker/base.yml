@@ -1,6 +1,8 @@
 services:
   git:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: codeberg.org/forgejo/forgejo:12
     container_name: forgejo
     environment:
@@ -21,7 +23,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${GIT_PORT}"
       homepage.description: "Self hosted Git"
   portainer:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: portainer/portainer-ce:latest
     container_name: portainer
     volumes:

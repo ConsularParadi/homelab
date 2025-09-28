@@ -1,6 +1,8 @@
 services:
   gluetun:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: docker.io/qmcgaw/gluetun
     container_name: gluetun
     cap_add:

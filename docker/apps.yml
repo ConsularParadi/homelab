@@ -1,6 +1,8 @@
 services:
   paisa:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     container_name: paisa
     image: ananthakumaran/paisa:latest
     ports:
@@ -14,13 +16,17 @@ services:
       homepage.href: "http://${IP_ADDR}:${PAISA_PORT}"
       homepage.description: "Personal Finance Manager"
   paperless-redis:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: docker.io/library/redis:8
     container_name: paperless-redis
     volumes:
       - "${CONFIG_DIR}/paperless/redis:/data"
   paperless:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     container_name: paperless-ngx
     depends_on:
@@ -42,7 +48,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${PAPERLESS_PORT}"
       homepage.description: "Document Management System"
   quartz:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: shommey/dockerized-quartz
     container_name: quartz
     ports:
@@ -57,7 +65,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${QUARTZ_PORT_8080}"
       homepage.description: "Digital Garden"
   vikunja:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: vikunja/vikunja
     container_name: vikunja
     ports:
@@ -81,7 +91,9 @@ services:
       homepage.href: "http://${IP_ADDR}:${VIKUNJA_PORT}"
       homepage.description: "To-do List Application"
   db:
-    <<: *common-properties
+    extends:
+      file: common.yml
+      service: common
     image: mariadb:10
     container_name: vikunja-db
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
