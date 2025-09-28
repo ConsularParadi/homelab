@@ -2,10 +2,10 @@
 # This file brings all your service definitions together.
 include:
   - common.yml
-  #  - network.yml
-  #  - vpn.yml
-  #  - base.yml
-  #  - media.yml
-  #  - arr.yml
-  #  - apps.yml
+  - network.yml
+  - vpn.yml
+  - base.yml
+  - media.yml
+  - arr.yml
+  - apps.yml
   - meta.yml
