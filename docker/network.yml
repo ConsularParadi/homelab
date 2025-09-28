@@ -1,3 +1,7 @@
+networks:
+  proxy:
+    external: true
+
 services:
   npm:
     restart: unless-stopped
