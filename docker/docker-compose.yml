@@ -1,6 +1,7 @@
 # docker-compose.yml
 # This file brings all your service definitions together.
 include:
+  - common.yml
   #  - network.yml
   #  - vpn.yml
   #  - base.yml
