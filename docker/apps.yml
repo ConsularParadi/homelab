@@ -38,7 +38,6 @@ services:
       - "${CONFIG_DIR}/paperless:/usr/src/paperless/data"
       - "${CONFIG_DIR}/paperless/export:/usr/src/paperless/export"
       - "${CONFIG_DIR}/paperless/consume:/usr/src/paperless/consume"
-    #env_file: docker-compose.env
     environment:
       PAPERLESS_REDIS: redis://paperless-redis:6379
     labels:
@@ -108,19 +107,3 @@ services:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -u $MYSQL_USER --password=$MYSQL_PASSWORD"]
       interval: 2s
       start_period: 30s
-  #zen:
-  #  image: lscr.io/linuxserver/zen:latest
-  #  container_name: zen-browser
-  #  security_opt:
-  #    - seccomp:unconfined #optional
-  #  environment:
-  #    - PUID=${PUID}
-  #    - PGID=${PGID}
-  #    - TZ=${TZ}
-  #  volumes:
-  #    - "${CONFIG_DIR}/zen:/config"
-  #  ports:
-  #    - 3000:3000
-  #    - 31204:3001
-  #  shm_size: "1gb"
-  #  restart: unless-stopped
