@@ -1,5 +1,7 @@
 services:
   npm:
+    <<: *common-properties
+    container_name: npm
     image: 'jc21/nginx-proxy-manager:latest'
     ports:
       - '80:80' # Public HTTP Port
@@ -17,9 +19,6 @@ services:
     volumes:
       - "${CONFIG_DIR}/npm/data:/data"
       - "${CONFIG_DIR}/npm/letsencrypt:/etc/letsencrypt"
-    networks:
-      - proxy
-    restart: unless-stopped
     labels:
       homepage.group: Network
       homepage.name: NPM
@@ -27,6 +26,7 @@ services:
       homepage.href: "http://${IP_ADDR}:${PROXY_PORT}"
       homepage.description: "Proxy Manager"
   pihole:
+    <<: *common-properties
     container_name: pihole
     image: pihole/pihole:latest
     ports:
@@ -38,8 +38,8 @@ services:
       #- "67:67/udp" # Uncomment the below if using Pi-hole as your DHCP Server
       #- "123:123/udp" # Uncomment the line below if you are using Pi-hole as your NTP server
     environment:
-      TZ: 'Asia/Kolkata'
-      FTLCONF_webserver_api_password: 'correct horse battery staple' # Set a password to access the web interface. Not setting one will result in a random password being assigned
+      TZ: ${TZ}
+      FTLCONF_webserver_api_password: ${PIHOLE_PASSWORD} # Set a password to access the web interface. Not setting one will result in a random password being assigned
       FTLCONF_dns_listeningMode: 'all' # If using Docker's default `bridge` network setting the dns listening mode should be set to 'all'
     volumes:
       - '${CONFIG_DIR}/pihole:/etc/pihole'
@@ -49,7 +49,6 @@ services:
       - NET_ADMIN # Required if you are using Pi-hole as your DHCP server, else not needed
       #- SYS_TIME # Required if you are using Pi-hole as your NTP client to be able to set the host's system time
       - SYS_NICE # Optional, if Pi-hole should get some more processing time
-    restart: unless-stopped
     labels:
       homepage.group: Network
       homepage.name: Pihole

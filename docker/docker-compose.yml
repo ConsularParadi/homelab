@@ -1,0 +1,10 @@
+# docker-compose.yml
+# This file brings all your service definitions together.
+include:
+  #  - network.yml
+  #  - vpn.yml
+  #  - base.yml
+  #  - media.yml
+  #  - arr.yml
+  #  - apps.yml
+  - meta.yml

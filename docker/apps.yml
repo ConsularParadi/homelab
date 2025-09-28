@@ -1,31 +1,32 @@
 services:
   paisa:
+    <<: *common-properties
+    container_name: paisa
     image: ananthakumaran/paisa:latest
     ports:
-      - 31203:7500
+      - ${PAISA_PORT}:7500
     volumes:
       - "${CONFIG_DIR}/paisa:/root/Documents/paisa"
-    restart: unless-stopped
-    networks:
-      - proxy
+    labels:
+      homepage.group: Apps
+      homepage.name: Paisa
+      homepage.icon: paisa.png
+      homepage.href: "http://${IP_ADDR}:${PAISA_PORT}"
+      homepage.description: "Personal Finance Manager"
   paperless-redis:
+    <<: *common-properties
     image: docker.io/library/redis:8
     container_name: paperless-redis
-    restart: unless-stopped
-    networks:
-      - proxy
     volumes:
       - "${CONFIG_DIR}/paperless/redis:/data"
   paperless:
+    <<: *common-properties
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     container_name: paperless-ngx
-    restart: unless-stopped
     depends_on:
       - paperless-redis
     ports:
-      - "31204:8000"
-    networks:
-      - proxy
+      - "${PAPERLESS_PORT}:8000"
     volumes:
       - "${MEDIA_DIR}/docs:/usr/src/paperless/media"
       - "${CONFIG_DIR}/paperless:/usr/src/paperless/data"
@@ -34,64 +35,76 @@ services:
     #env_file: docker-compose.env
     environment:
       PAPERLESS_REDIS: redis://paperless-redis:6379
+    labels:
+      homepage.group: Apps
+      homepage.name: Paperless-NGX
+      homepage.icon: paperless-ngx.png
+      homepage.href: "http://${IP_ADDR}:${PAPERLESS_PORT}"
+      homepage.description: "Document Management System"
   quartz:
+    <<: *common-properties
     image: shommey/dockerized-quartz
     container_name: quartz
     ports:
-      - "31201:8080"
-      - "31251:3001"
+      - "${QUARTZ_PORT_8080}:8080"
+      - "${QUARTZ_PORT_3001}:3001"
     volumes:
       - ${MEDIA_DIR}/notes:/usr/src/app/content
-    restart: unless-stopped
-    networks:
-      - proxy
+    labels:
+      homepage.group: Apps
+      homepage.name: Quartz
+      homepage.icon: quartz.png
+      homepage.href: "http://${IP_ADDR}:${QUARTZ_PORT_8080}"
+      homepage.description: "Digital Garden"
   vikunja:
+    <<: *common-properties
     image: vikunja/vikunja
     container_name: vikunja
     ports:
-      - 31202:3456
+      - ${VIKUNJA_PORT}:3456
     volumes:
       - "${CONFIG_DIR}/vikunja/files:/app/vikunja/files"
     environment:
       VIKUNJA_DATABASE_HOST: vikunja-db
-      VIKUNJA_DATABASE_PASSWORD: changeme
+      VIKUNJA_DATABASE_PASSWORD: ${VIKUNJA_DB_PASSWORD}
       VIKUNJA_DATABASE_TYPE: mysql
       VIKUNJA_DATABASE_USER: vikunja
       VIKUNJA_DATABASE_DATABASE: vikunja
-      VIKUNJA_SERVICE_JWTSECRET: supersecret
+      VIKUNJA_SERVICE_JWTSECRET: ${VIKUNJA_JWT_SECRET}
     depends_on:
       db:
         condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - proxy
+    labels:
+      homepage.group: Apps
+      homepage.name: Vikunja
+      homepage.icon: vikunja.png
+      homepage.href: "http://${IP_ADDR}:${VIKUNJA_PORT}"
+      homepage.description: "To-do List Application"
   db:
+    <<: *common-properties
     image: mariadb:10
     container_name: vikunja-db
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - "${CONFIG_DIR}/vikunja/db:/var/lib/mysql"
     environment:
-      MYSQL_ROOT_PASSWORD: supersecret
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_USER: vikunja
-      MYSQL_PASSWORD: changeme
+      MYSQL_PASSWORD: ${VIKUNJA_DB_PASSWORD}
       MYSQL_DATABASE: vikunja
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u $MYSQL_USER --password=$MYSQL_PASSWORD"]
       interval: 2s
       start_period: 30s
-    restart: unless-stopped
-    networks:
-      - proxy
   #zen:
   #  image: lscr.io/linuxserver/zen:latest
   #  container_name: zen-browser
   #  security_opt:
   #    - seccomp:unconfined #optional
   #  environment:
-  #    - PUID=1000
-  #    - PGID=1000
-  #    - TZ=Asia/Kolkata
+  #    - PUID=${PUID}
+  #    - PGID=${PGID}
+  #    - TZ=${TZ}
   #  volumes:
   #    - "${CONFIG_DIR}/zen:/config"
   #  ports:

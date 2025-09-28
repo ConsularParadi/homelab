@@ -1,13 +1,12 @@
 services:
   git:
+    <<: *common-properties
     image: codeberg.org/forgejo/forgejo:12
     container_name: forgejo
     environment:
       - USER_UID=1000
       - USER_GID=1000
     restart: always
-    networks:
-      - proxy
     volumes:
       - ${CONFIG_DIR}/forgejo:/data
       - /etc/timezone:/etc/timezone:ro
@@ -22,15 +21,13 @@ services:
       homepage.href: "http://${IP_ADDR}:${GIT_PORT}"
       homepage.description: "Self hosted Git"
   portainer:
+    <<: *common-properties
     image: portainer/portainer-ce:latest
     container_name: portainer
-    restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${CONFIG_DIR}/portainer:/data
-    networks:
-      - proxy
     ports:
       - ${PORTAINER_PORT}:9000
     labels:

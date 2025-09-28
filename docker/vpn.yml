@@ -1,5 +1,6 @@
 services:
   gluetun:
+    <<: *common-properties
     image: docker.io/qmcgaw/gluetun
     container_name: gluetun
     cap_add:
@@ -7,14 +8,12 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - 31108:9117 # expose Jackett through Gluetun
+      - ${GLUETUN_JACKETT_PORT}:9117 # expose Jackett through Gluetun
     volumes:
       - ${CONFIG_DIR}/gluetun:/gluetun
     environment:
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY=+OwDWPkQRyKwSubiAxhyETCnj8xEFQMCYHdtwye3UVk=
-      - TZ=Asia/Kolkata
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - TZ=${TZ}
       - SERVER_COUNTRIES=Netherlands
-    networks:
-      - proxy

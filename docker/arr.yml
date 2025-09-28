@@ -1,5 +1,6 @@
 services:
   jellyseerr:
+    <<: *common-properties
     image: docker.io/fallenbagel/jellyseerr:latest
     container_name: jellyseerr
     ports:
@@ -8,11 +9,15 @@ services:
       - ${CONFIG_DIR}/jellyseerr:/app/config
     environment:
       - LOG_LEVEL=debug
-      - TZ=Asia/Kolkata
-    restart: unless-stopped
-    networks:
-      - proxy
+      - TZ=${TZ}
+    labels:
+      homepage.group: Arr
+      homepage.name: Jellyseerr
+      homepage.icon: jellyseerr.png
+      homepage.href: "http://${IP_ADDR}:${JELLYSEERR_PORT}"
+      homepage.description: "Media Request Manager"
   radarr:
+    <<: *common-properties
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     ports:
@@ -21,13 +26,17 @@ services:
       - ${CONFIG_DIR}/radarr:/config
       - ${MEDIA_DIR}:/media
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    restart: unless-stopped
-    networks:
-      - proxy
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    labels:
+      homepage.group: Arr
+      homepage.name: Radarr
+      homepage.icon: radarr.png
+      homepage.href: "http://${IP_ADDR}:${RADARR_PORT}"
+      homepage.description: "Movie Collection Manager"
   sonarr:
+    <<: *common-properties
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     ports:
@@ -36,13 +45,17 @@ services:
       - ${CONFIG_DIR}/sonarr:/config
       - ${MEDIA_DIR}:/media
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    restart: unless-stopped
-    networks:
-      - proxy
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    labels:
+      homepage.group: Arr
+      homepage.name: Sonarr
+      homepage.icon: sonarr.png
+      homepage.href: "http://${IP_ADDR}:${SONARR_PORT}"
+      homepage.description: "TV Series Manager"
   bazarr:
+    <<: *common-properties
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     ports:
@@ -52,25 +65,36 @@ services:
       - ${MEDIA_DIR}/movies:/movies
       - ${MEDIA_DIR}/tv-shows:/tv
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    restart: unless-stopped
-    networks:
-      - proxy
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    labels:
+      homepage.group: Arr
+      homepage.name: Bazarr
+      homepage.icon: bazarr.png
+      homepage.href: "http://${IP_ADDR}:${BAZARR_PORT}"
+      homepage.description: "Subtitle Manager"
   jackett:
     image: lscr.io/linuxserver/jackett:latest
     container_name: jackett
+    restart: unless-stopped
     volumes:
       - ${CONFIG_DIR}/jackett:/config
       - ${MEDIA_DIR}/downloads/torrents:/downloads
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
       - AUTO_UPDATE=true
     network_mode: service:gluetun
+    labels:
+      homepage.group: Arr
+      homepage.name: Jackett
+      homepage.icon: jackett.png
+      homepage.href: "http://${IP_ADDR}:${GLUETUN_JACKETT_PORT}"
+      homepage.description: "Indexer Proxy"
   qbittorrent:
+    <<: *common-properties
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     ports:
@@ -81,14 +105,17 @@ services:
       - ${CONFIG_DIR}/qbittorrent:/config
       - ${MEDIA_DIR}/downloads/torrents:/downloads
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=${PUID}
+      - PGID=${PGID}
       - TZ=Etc/UTC
       - WEBUI_PORT=8080
       - TORRENTING_PORT=6881
-    restart: unless-stopped
-    networks:
-      - proxy
+    labels:
+      homepage.group: Arr
+      homepage.name: qBittorrent
+      homepage.icon: qbittorrent.png
+      homepage.href: "http://${IP_ADDR}:${TORRENT_PORT}"
+      homepage.description: "Torrent Client"
     #  tdarr:
     #    container_name: tdarr
     #    image: ghcr.io/haveagitgat/tdarr:latest

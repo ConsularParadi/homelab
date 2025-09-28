@@ -1,9 +1,8 @@
 services:
   homepage:
+    <<: *common-properties
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
-    networks:
-      - proxy
     ports:
       - ${HOMEPAGE_PORT}:3000
     volumes:
@@ -12,6 +11,7 @@ services:
     environment:
       HOMEPAGE_ALLOWED_HOSTS: "*" #gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
   guacamole:
+    <<: *common-properties
     image: oznu/guacamole
     container_name: guacamole
     volumes:
@@ -24,7 +24,3 @@ services:
       homepage.icon: guacamole.png
       homepage.href: "http://${IP_ADDR}:${GUACAMOLE_PORT}"
       homepage.description: "Access to server UI"
-networks:
-  proxy:
-    name: proxy
-    driver: bridge

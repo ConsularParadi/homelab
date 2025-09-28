@@ -1,12 +1,12 @@
 services:
   jellyfin:
+    <<: *common-properties
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
-    restart: unless-stopped
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
       - ${CONFIG_DIR}/jellyfin:/config
       - ${MEDIA_DIR}/tv-shows:/data/tvshows
@@ -16,8 +16,6 @@ services:
     #      - 8920:8920 #optional
     #      - 7359:7359/udp #optional
     #      - 1900:1900/udp #optional
-    networks:
-      - proxy
     labels:
       homepage.group: Media
       homepage.name: Jellyfin
@@ -25,6 +23,7 @@ services:
       homepage.href: "http://${IP_ADDR}:${JELLYFIN_PORT}"
       homepage.description: "Media Server"
   navidrome:
+    <<: *common-properties
     container_name: navidrome
     image: deluan/navidrome:latest
     environment:
@@ -37,10 +36,7 @@ services:
       - ${MEDIA_DIR}/music:/music:ro
     ports:
       - "${MUSIC_PORT}:4533"
-    networks:
-      - proxy
-    user: 1000:1000
-    restart: unless-stopped
+    user: ${PUID}:${PGID}
     labels:
       homepage.group: Media
       homepage.name: Navidrome
@@ -48,6 +44,7 @@ services:
       homepage.href: "http://${IP_ADDR}:${MUSIC_PORT}"
       homepage.description: "Music Server"
   audiobookshelf:
+    <<: *common-properties
     container_name: audiobookshelf
     image: ghcr.io/advplyr/audiobookshelf:latest
     ports:
@@ -58,11 +55,8 @@ services:
       - ${CONFIG_DIR}/audiobookshelf:/config
       - ${CONFIG_DIR}/audiobookshelf/metadata:/metadata
     environment:
-      - TZ=Asia/Kolkata
-    networks:
-      - proxy
-    user: 1000:1000
-    restart: unless-stopped
+      - TZ=${TZ}
+    user: ${PUID}:${PGID}
     labels:
       homepage.group: Media
       homepage.name: Audiobookshelf
