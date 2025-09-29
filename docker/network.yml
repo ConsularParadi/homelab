@@ -34,13 +34,12 @@ services:
     image: lscr.io/linuxserver/duckdns:latest
     container_name: duckdns
     network_mode: host
-    dns: 1.1.1.1
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
       - SUBDOMAINS=tildah
-      - TOKEN="2e121305-b828-4f19-8676-a72609034405"
+      - TOKEN=2e121305-b828-4f19-8676-a72609034405
       - IPV4_ADDRESS=https://ipv4.icanhazip.com
       - UPDATE_IP=ipv4 #optional
       - LOG_FILE=true #optional
