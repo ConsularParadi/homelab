@@ -1,7 +1,6 @@
 networks:
   proxy:
     external: true
-
 services:
   npm:
     restart: unless-stopped
@@ -31,6 +30,21 @@ services:
       homepage.icon: npm.png
       homepage.href: "http://${IP_ADDR}:${PROXY_PORT}"
       homepage.description: "Proxy Manager"
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - SUBDOMAINS=tildah
+      - TOKEN="2e121305-b828-4f19-8676-a72609034405"
+      - UPDATE_IP=ipv4 #optional
+      - LOG_FILE=true #optional
+    volumes:
+      - "${CONFIG_DIR}/duckdns:/config"
+    restart: unless-stopped
   pihole:
     restart: unless-stopped
     networks:
