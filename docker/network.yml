@@ -37,7 +37,7 @@ services:
     network_mode: host
     volumes:
       - "${CONFIG_DIR}/cloudflared:/etc/cloudflared"
-    command: tunnel run --url http://127.0.0.1:80 homelab
+    command: tunnel --config /etc/cloudflared/config.yml run homelab
   duckdns:
     image: lscr.io/linuxserver/duckdns:latest
     container_name: duckdns
