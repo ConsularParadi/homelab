@@ -40,6 +40,7 @@ services:
       - TZ=${TZ}
       - SUBDOMAINS=tildah
       - TOKEN="2e121305-b828-4f19-8676-a72609034405"
+      - IPV4_ADDRESS=https://ipv4.icanhazip.com
       - UPDATE_IP=ipv4 #optional
       - LOG_FILE=true #optional
     volumes:
