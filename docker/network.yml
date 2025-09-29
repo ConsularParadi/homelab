@@ -34,6 +34,7 @@ services:
     image: lscr.io/linuxserver/duckdns:latest
     container_name: duckdns
     network_mode: host
+    dns: 1.1.1.1
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
