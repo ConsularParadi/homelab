@@ -30,6 +30,14 @@ services:
       homepage.icon: npm.png
       homepage.href: "http://${IP_ADDR}:${PROXY_PORT}"
       homepage.description: "Proxy Manager"
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - "${CONFIG_DIR}/cloudflared:/etc/cloudflared"
+    command: tunnel run --url http://127.0.0.1:80 homelab
   duckdns:
     image: lscr.io/linuxserver/duckdns:latest
     container_name: duckdns
