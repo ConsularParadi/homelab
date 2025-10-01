@@ -15,31 +15,31 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       HOMEPAGE_ALLOWED_HOSTS: "*"
-    rustdesk-hbbs: # direct
-      container_name: hbbs
-      image: rustdesk/rustdesk-server:latest
-      command: hbbs
-      volumes:
-        - ${CONFIG_DIR}/rustdesk/hbbs:/root
-      network_mode: "host"
-      depends_on:
-        - hbbr
-      restart: unless-stopped
-      homepage.group: Meta
-      homepage.name: Rustdesk - Direct
-      homepage.icon: rustdesk.png
-      homepage.href: "http://${IP_ADDR}:21118"
-      homepage.description: "Access to server UI"
-    rustdesk-hbbr: # fallback
-      container_name: hbbr
-      image: rustdesk/rustdesk-server:latest
-      command: hbbr
-      volumes:
-        - ${CONFIG_DIR}/rustdesk/hbbr:/root
-      network_mode: "host"
-      restart: unless-stopped
-      homepage.group: Meta
-      homepage.name: Rustdesk - Fallback
-      homepage.icon: rustdesk.png
-      homepage.href: "http://${IP_ADDR}:21119"
-      homepage.description: "Access to server UI"
+  rustdesk-hbbs:
+    container_name: hbbs
+    image: rustdesk/rustdesk-server:latest
+    command: hbbs
+    volumes:
+      - ${CONFIG_DIR}/rustdesk/hbbs:/root
+    network_mode: "host"
+    depends_on:
+      - hbbr
+    restart: unless-stopped
+    homepage.group: Meta
+    homepage.name: Rustdesk - Direct
+    homepage.icon: rustdesk.png
+    homepage.href: "http://${IP_ADDR}:21118"
+    homepage.description: "Access to server UI"
+  rustdesk-hbbr: # fallback
+    container_name: hbbr
+    image: rustdesk/rustdesk-server:latest
+    command: hbbr
+    volumes:
+      - ${CONFIG_DIR}/rustdesk/hbbr:/root
+    network_mode: "host"
+    restart: unless-stopped
+    homepage.group: Meta
+    homepage.name: Rustdesk - Fallback
+    homepage.icon: rustdesk.png
+    homepage.href: "http://${IP_ADDR}:21119"
+    homepage.description: "Access to server UI"
