@@ -2,16 +2,6 @@ networks:
   proxy:
     external: true
 services:
-  vaultwarden:
-    image: vaultwarden/server:latest
-    container_name: vaultwarden
-    restart: unless-stopped
-    #environment:
-    #  DOMAIN: "https://vw.domain.tld"
-    volumes:
-      - "${CONFIG_DIR}/vaultwarden:/data"
-    ports:
-      - ${VAULTWARDEN_PORT}:80
   paisa:
     restart: unless-stopped
     networks:
@@ -63,10 +53,10 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-    image: shommey/dockerized-quartz
+    image: 192.168.1.52:31005/consular/quartz
     container_name: quartz
     ports:
-      - "${QUARTZ_PORT_8080}:8080"
+      - "${QUARTZ_PORT}:8080"
       - "${QUARTZ_PORT_3001}:3001"
     volumes:
       - ${MEDIA_DIR}/notes:/usr/src/app/content

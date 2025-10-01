@@ -1,7 +1,6 @@
 networks:
   proxy:
     external: true
-
 services:
   homepage:
     restart: unless-stopped
@@ -15,20 +14,26 @@ services:
       - ${CONFIG_DIR}/homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      HOMEPAGE_ALLOWED_HOSTS: "*" #gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
-  guacamole:
-    restart: unless-stopped
+      HOMEPAGE_ALLOWED_HOSTS: "*"
+  rustdesk:
+    image: lscr.io/linuxserver/rustdesk:latest
+    container_name: rustdesk
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_DIR}/rustdesk:/config
+    ports:
+      #- 3000:3000
+      - ${RUSTDESK_PORT}:3001
     networks:
       - proxy
-    image: oznu/guacamole
-    container_name: guacamole
-    volumes:
-      - ${CONFIG_DIR}/guacamole:/config
-    ports:
-      - ${GUACAMOLE_PORT}:8080
+    shm_size: "1gb"
+    restart: unless-stopped
     labels:
       homepage.group: Meta
-      homepage.name: Guacamole
-      homepage.icon: guacamole.png
-      homepage.href: "http://${IP_ADDR}:${GUACAMOLE_PORT}"
+      homepage.name: Rustdesk
+      homepage.icon: rustdesk.png
+      homepage.href: "http://${IP_ADDR}:${RUSTDESK_PORT}"
       homepage.description: "Access to server UI"
