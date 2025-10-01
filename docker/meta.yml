@@ -15,47 +15,19 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       HOMEPAGE_ALLOWED_HOSTS: "*"
-  rustdesk-id:
-    container_name: rustdesk-id
-    image: rustdesk/rustdesk-server:latest
-    command: hbbs -r rustdesk-relay:21117
+  kasm:
+    image: lscr.io/linuxserver/kasm:latest
+    container_name: kasm
+    privileged: true
+    security_opt:
+      - apparmor:rootlesskit #optional
+    
     volumes:
-      - ${CONFIG_DIR}/rustdesk/id:/root
-    network_mode: "host"
-    depends_on:
-      - rustdesk-relay
-    restart: unless-stopped
-    labels:
-      homepage.group: Meta
-      homepage.name: Rustdesk - Direct
-      homepage.icon: rustdesk.png
-      homepage.href: "http://${IP_ADDR}:21118"
-      homepage.description: "Access to server UI"
-  rustdesk-relay: # fallback
-    container_name: rustdesk-relay
-    image: rustdesk/rustdesk-server:latest
-    command: hbbr
-    volumes:
-      - ${CONFIG_DIR}/rustdesk/relay:/root
-    network_mode: "host"
-    restart: unless-stopped
-    labels:
-      homepage.group: Meta
-      homepage.name: Rustdesk - Fallback
-      homepage.icon: rustdesk.png
-      homepage.href: "http://${IP_ADDR}:21119"
-      homepage.description: "Access to server UI"
-  rustdesk-client:
-    image: lscr.io/linuxserver/rustdesk:latest
-    container_name: rustdesk-client
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${CONFIG_DIR}/rustdesk/client:/config
+      - ${CONFIG_DIR}/kasm/data:/opt
+      - ${CONFIG_DIR}/kasm/profiles:/profiles #optional
+      - /dev/input:/dev/input #optional
+      - /run/udev/data:/run/udev/data #optional
     ports:
-      - 3000:3000
-      - 3001:3001
-    shm_size: "1gb"
+      - ${KASM_SETUP_PORT}:3000
+      - ${KASM_PORT}:443
     restart: unless-stopped
