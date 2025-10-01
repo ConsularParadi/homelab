@@ -31,4 +31,6 @@ services:
     ports:
       - ${KASM_SETUP_PORT}:3000
       - ${KASM_PORT}:${KASM_PORT}
+    networks:
+      - proxy
     restart: unless-stopped
