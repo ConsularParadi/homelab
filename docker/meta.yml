@@ -23,7 +23,7 @@ services:
       - ${CONFIG_DIR}/rustdesk/hbbs:/root
     network_mode: "host"
     depends_on:
-      - hbbr
+      - rustdesk-hbbr
     restart: unless-stopped
     labels:
       homepage.group: Meta
