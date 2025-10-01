@@ -83,6 +83,7 @@ services:
       VIKUNJA_DATABASE_USER: vikunja
       VIKUNJA_DATABASE_DATABASE: vikunja
       VIKUNJA_SERVICE_JWTSECRET: ${VIKUNJA_JWT_SECRET}
+      VIKUNJA_SERVICE_PUBLICURL: http://${IP_ADDR}:${VIKUNJA_PORT}
     depends_on:
       db:
         condition: service_healthy

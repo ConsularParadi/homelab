@@ -15,15 +15,15 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       HOMEPAGE_ALLOWED_HOSTS: "*"
-  rustdesk-hbbs:
-    container_name: hbbs
+  rustdesk-id:
+    container_name: rustdesk-id
     image: rustdesk/rustdesk-server:latest
-    command: hbbs
+    command: hbbs -r rustdesk-relay:21117
     volumes:
-      - ${CONFIG_DIR}/rustdesk/hbbs:/root
+      - ${CONFIG_DIR}/rustdesk/id:/root
     network_mode: "host"
     depends_on:
-      - rustdesk-hbbr
+      - rustdesk-relay
     restart: unless-stopped
     labels:
       homepage.group: Meta
@@ -31,12 +31,12 @@ services:
       homepage.icon: rustdesk.png
       homepage.href: "http://${IP_ADDR}:21118"
       homepage.description: "Access to server UI"
-  rustdesk-hbbr: # fallback
-    container_name: hbbr
+  rustdesk-relay: # fallback
+    container_name: rustdesk-relay
     image: rustdesk/rustdesk-server:latest
     command: hbbr
     volumes:
-      - ${CONFIG_DIR}/rustdesk/hbbr:/root
+      - ${CONFIG_DIR}/rustdesk/relay:/root
     network_mode: "host"
     restart: unless-stopped
     labels:
@@ -45,3 +45,17 @@ services:
       homepage.icon: rustdesk.png
       homepage.href: "http://${IP_ADDR}:21119"
       homepage.description: "Access to server UI"
+  rustdesk-client:
+    image: lscr.io/linuxserver/rustdesk:latest
+    container_name: rustdesk-client
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_DIR}/rustdesk/client:/config
+    ports:
+      - 3000:3000
+      - 3001:3001
+    shm_size: "1gb"
+    restart: unless-stopped
