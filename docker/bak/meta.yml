@@ -1,0 +1,16 @@
+guacamole:
+  restart: unless-stopped
+  networks:
+    - proxy
+  image: oznu/guacamole
+  container_name: guacamole
+  volumes:
+    - ${CONFIG_DIR}/guacamole:/config
+  ports:
+    - ${GUACAMOLE_PORT}:8080
+  labels:
+    homepage.group: Meta
+    homepage.name: Guacamole
+    homepage.icon: guacamole.png
+    homepage.href: "http://${IP_ADDR}:${GUACAMOLE_PORT}"
+    homepage.description: "Access to server UI"

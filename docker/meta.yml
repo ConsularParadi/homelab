@@ -15,25 +15,31 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       HOMEPAGE_ALLOWED_HOSTS: "*"
-  rustdesk:
-    image: lscr.io/linuxserver/rustdesk:latest
-    container_name: rustdesk
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${CONFIG_DIR}/rustdesk:/config
-    ports:
-      #- 3000:3000
-      - ${RUSTDESK_PORT}:3001
-    networks:
-      - proxy
-    shm_size: "1gb"
-    restart: unless-stopped
-    labels:
+    rustdesk-hbbs: # direct
+      container_name: hbbs
+      image: rustdesk/rustdesk-server:latest
+      command: hbbs
+      volumes:
+        - ${CONFIG_DIR}/rustdesk/hbbs:/root
+      network_mode: "host"
+      depends_on:
+        - hbbr
+      restart: unless-stopped
       homepage.group: Meta
-      homepage.name: Rustdesk
+      homepage.name: Rustdesk - Direct
       homepage.icon: rustdesk.png
-      homepage.href: "http://${IP_ADDR}:${RUSTDESK_PORT}"
+      homepage.href: "http://${IP_ADDR}:21118"
+      homepage.description: "Access to server UI"
+    rustdesk-hbbr: # fallback
+      container_name: hbbr
+      image: rustdesk/rustdesk-server:latest
+      command: hbbr
+      volumes:
+        - ${CONFIG_DIR}/rustdesk/hbbr:/root
+      network_mode: "host"
+      restart: unless-stopped
+      homepage.group: Meta
+      homepage.name: Rustdesk - Fallback
+      homepage.icon: rustdesk.png
+      homepage.href: "http://${IP_ADDR}:21119"
       homepage.description: "Access to server UI"
