@@ -21,7 +21,8 @@ services:
     privileged: true
     security_opt:
       - apparmor:rootlesskit #optional
-    
+    environment:
+      - KASM_PORT=${KASM_PORT}
     volumes:
       - ${CONFIG_DIR}/kasm/data:/opt
       - ${CONFIG_DIR}/kasm/profiles:/profiles #optional
@@ -29,5 +30,5 @@ services:
       - /run/udev/data:/run/udev/data #optional
     ports:
       - ${KASM_SETUP_PORT}:3000
-      - ${KASM_PORT}:443
+      - ${KASM_PORT}:${KASM_PORT}
     restart: unless-stopped
