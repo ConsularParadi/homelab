@@ -25,11 +25,12 @@ services:
     depends_on:
       - hbbr
     restart: unless-stopped
-    homepage.group: Meta
-    homepage.name: Rustdesk - Direct
-    homepage.icon: rustdesk.png
-    homepage.href: "http://${IP_ADDR}:21118"
-    homepage.description: "Access to server UI"
+    labels:
+      homepage.group: Meta
+      homepage.name: Rustdesk - Direct
+      homepage.icon: rustdesk.png
+      homepage.href: "http://${IP_ADDR}:21118"
+      homepage.description: "Access to server UI"
   rustdesk-hbbr: # fallback
     container_name: hbbr
     image: rustdesk/rustdesk-server:latest
@@ -38,8 +39,9 @@ services:
       - ${CONFIG_DIR}/rustdesk/hbbr:/root
     network_mode: "host"
     restart: unless-stopped
-    homepage.group: Meta
-    homepage.name: Rustdesk - Fallback
-    homepage.icon: rustdesk.png
-    homepage.href: "http://${IP_ADDR}:21119"
-    homepage.description: "Access to server UI"
+    labels:
+      homepage.group: Meta
+      homepage.name: Rustdesk - Fallback
+      homepage.icon: rustdesk.png
+      homepage.href: "http://${IP_ADDR}:21119"
+      homepage.description: "Access to server UI"
