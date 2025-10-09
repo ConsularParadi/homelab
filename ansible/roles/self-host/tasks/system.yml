@@ -1,26 +1,26 @@
-#- name: Configure static IP address for Wi-Fi
-#  become: true
-#  block:
-#    - name: Input configuration file
-#      ansible.builtin.copy:
-#        content: |
-#          [Match]
-#          Name=wlan0
-#
-#          [Network]
-#          Address=192.168.1.222/24
-#          Gateway=192.168.1.1
-#          DNS=192.168.1.1
-#        dest: /etc/systemd/network/20-static-wlan0.network
-#        owner: root
-#        group: root
-#        mode: '0644'
-#    - name: Reload and restart systemd-networkd service to apply new config
-#      ansible.builtin.systemd:
-#        name: systemd-networkd.service
-#        state: restarted
-#        enabled: true
-#        daemon_reload: true
+- name: Configure static IP address for Wi-Fi
+  become: true
+  block:
+    - name: Input configuration file
+      ansible.builtin.copy:
+        content: |
+          [Match]
+          Name=wlan0
+
+          [Network]
+          Address=192.168.1.52/24
+          Gateway=192.168.1.1
+          DNS=192.168.1.1
+        dest: /etc/systemd/network/20-static-wlan0.network
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Reload and restart systemd-networkd service to apply new config
+      ansible.builtin.systemd:
+        name: systemd-networkd.service
+        state: restarted
+        enabled: true
+        daemon_reload: true
 - name: Mount additional NAS drive
   become: true
   block:
@@ -38,6 +38,7 @@
         fstype: ext4 # Replace with your filesystem type (e.g., btrfs, xfs)
         state: mounted
         opts: defaults,nofail
+  when: ansible_mounts | selectattr('mount', 'equalto', '/mnt/nas') | list | length == 0
 
 #- name: Setup tailscale VPN
 #  include_role:

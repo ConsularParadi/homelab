@@ -3,6 +3,7 @@
 include:
   - network.yml
   - vpn.yml
+  - gaming.yml
   #- base.yml
   - media.yml
   - arr.yml

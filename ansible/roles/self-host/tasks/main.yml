@@ -2,4 +2,4 @@
   ansible.builtin.include_tasks: "{{ item }}"
   loop:
     - system.yml
-    - docker.yml
+    #- docker.yml
