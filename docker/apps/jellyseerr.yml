@@ -1,0 +1,20 @@
+services:
+  jellyseerr:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: docker.io/fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    ports:
+      - ${JELLYSEERR_PORT}:5055
+    volumes:
+      - ${CONFIG_DIR}/jellyseerr:/app/config
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${TZ}
+    labels:
+      homepage.group: Arr
+      homepage.name: Jellyseerr
+      homepage.icon: jellyseerr.png
+      homepage.href: "http://request.media.${DOMAIN}"
+      homepage.description: "Media Request Manager"

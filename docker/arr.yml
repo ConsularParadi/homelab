@@ -1,0 +1,7 @@
+include:
+  - apps/bazarr.yml
+  - apps/jackett.yml
+  - apps/jellyseerr.yml
+  - apps/qbittorrent.yml
+  - apps/radarr.yml
+  - apps/sonarr.yml

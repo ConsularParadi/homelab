@@ -1,0 +1,21 @@
+services:
+  gluetun:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: docker.io/qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - ${GLUETUN_JACKETT_PORT}:9117 # expose Jackett through Gluetun
+    volumes:
+      - ${CONFIG_DIR}/gluetun:/gluetun
+    environment:
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - TZ=${TZ}
+      - SERVER_COUNTRIES=Netherlands

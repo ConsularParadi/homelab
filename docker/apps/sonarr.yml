@@ -1,0 +1,22 @@
+services:
+  sonarr:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    ports:
+      - ${SONARR_PORT}:8989
+    volumes:
+      - ${CONFIG_DIR}/sonarr:/config
+      - ${MEDIA_DIR}:/media
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    labels:
+      homepage.group: Arr
+      homepage.name: Sonarr
+      homepage.icon: sonarr.png
+      homepage.href: "http://tv.${DOMAIN}"
+      homepage.description: "TV Series Manager"

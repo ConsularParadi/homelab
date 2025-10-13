@@ -1,0 +1,22 @@
+services:
+  radarr:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    ports:
+      - ${RADARR_PORT}:7878
+    volumes:
+      - ${CONFIG_DIR}/radarr:/config
+      - ${MEDIA_DIR}:/media
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    labels:
+      homepage.group: Arr
+      homepage.name: Radarr
+      homepage.icon: radarr.png
+      homepage.href: "http://movies.${DOMAIN}"
+      homepage.description: "Movie Collection Manager"

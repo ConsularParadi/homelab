@@ -1,0 +1,24 @@
+services:
+  navidrome:
+    restart: unless-stopped
+    networks:
+      - proxy
+    container_name: navidrome
+    image: deluan/navidrome:latest
+    environment:
+      ND_SCANSCHEDULE: 1h
+      ND_LOGLEVEL: info
+      ND_SESSIONTIMEOUT: 24h
+      ND_BASEURL: ""
+    volumes:
+      - ${CONFIG_DIR}/navidrome:/data
+      - ${MEDIA_DIR}/music:/music:ro
+    ports:
+      - "${MUSIC_PORT}:4533"
+    user: ${PUID}:${PGID}
+    labels:
+      homepage.group: Media
+      homepage.name: Navidrome
+      homepage.icon: navidrome.png
+      homepage.href: "http://music.${DOMAIN}"
+      homepage.description: "Music Server"

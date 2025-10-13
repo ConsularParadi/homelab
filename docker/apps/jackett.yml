@@ -1,0 +1,20 @@
+services:
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/jackett:/config
+      - ${MEDIA_DIR}/downloads/torrents:/downloads
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - AUTO_UPDATE=true
+    network_mode: service:gluetun
+    labels:
+      homepage.group: Arr
+      homepage.name: Jackett
+      homepage.icon: jackett.png
+      homepage.href: "http://indexer.${DOMAIN}"
+      homepage.description: "Indexer Proxy"

@@ -1,0 +1,46 @@
+services:
+  vikunja:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: vikunja/vikunja
+    container_name: vikunja
+    ports:
+      - ${VIKUNJA_PORT}:3456
+    volumes:
+      - "${CONFIG_DIR}/vikunja/files:/app/vikunja/files"
+    environment:
+      VIKUNJA_DATABASE_HOST: vikunja-db
+      VIKUNJA_DATABASE_PASSWORD: ${VIKUNJA_DB_PASSWORD}
+      VIKUNJA_DATABASE_TYPE: mysql
+      VIKUNJA_DATABASE_USER: vikunja
+      VIKUNJA_DATABASE_DATABASE: vikunja
+      VIKUNJA_SERVICE_JWTSECRET: ${VIKUNJA_JWT_SECRET}
+      VIKUNJA_SERVICE_PUBLICURL: http://${IP_ADDR}:${VIKUNJA_PORT}
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      homepage.group: Apps
+      homepage.name: Vikunja
+      homepage.icon: vikunja.png
+      homepage.href: "http://todo.${DOMAIN}"
+      homepage.description: "To-do List Application"
+  db:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: mariadb:10
+    container_name: vikunja-db
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - "${CONFIG_DIR}/vikunja/db:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: vikunja
+      MYSQL_PASSWORD: ${VIKUNJA_DB_PASSWORD}
+      MYSQL_DATABASE: vikunja
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u $MYSQL_USER --password=$MYSQL_PASSWORD"]
+      interval: 2s
+      start_period: 30s

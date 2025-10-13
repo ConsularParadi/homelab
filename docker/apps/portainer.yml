@@ -1,0 +1,23 @@
+services:
+  portainer:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONFIG_DIR}/portainer:/data
+    ports:
+      - ${PORTAINER_PORT}:9000
+    labels:
+      homepage.group: Meta
+      homepage.name: Portainer
+      homepage.icon: portainer.png
+      homepage.href: "http://docker.${DOMAIN}"
+      homepage.description: "Container Management"
+      #      - "traefik.enable=true"
+      #      - "traefik.http.routers.portainer.rule=Host(`portainer.home.arpa`)"
+      #      - "traefik.http.routers.portainer.entrypoints=web"
+      #      - "traefik.http.services.portainer.loadbalancer.server.port=9000"

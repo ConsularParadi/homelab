@@ -1,0 +1,23 @@
+services:
+  git:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: codeberg.org/forgejo/forgejo:12
+    container_name: forgejo
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    volumes:
+      - ${CONFIG_DIR}/forgejo:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '${GIT_PORT}:3000'
+      - '${GIT_SSH_PORT}:22'
+    labels:
+      homepage.group: Meta
+      homepage.name: Forgejo
+      homepage.icon: forgejo.png
+      homepage.href: "http://git.${DOMAIN}"
+      homepage.description: "Self hosted Git"

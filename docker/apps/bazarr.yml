@@ -1,0 +1,23 @@
+services:
+  bazarr:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    ports:
+      - ${BAZARR_PORT}:6767
+    volumes:
+      - ${CONFIG_DIR}/bazarr:/config
+      - ${MEDIA_DIR}/movies:/movies
+      - ${MEDIA_DIR}/tv-shows:/tv
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    labels:
+      homepage.group: Arr
+      homepage.name: Bazarr
+      homepage.icon: bazarr.png
+      homepage.href: "http://subs.${DOMAIN}"
+      homepage.description: "Subtitle Manager"

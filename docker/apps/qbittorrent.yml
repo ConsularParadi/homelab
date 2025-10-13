@@ -1,0 +1,26 @@
+services:
+  qbittorrent:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    ports:
+      - ${TORRENT_PORT}:8080
+      - 6881:6881
+      - 6881:6881/udp
+    volumes:
+      - ${CONFIG_DIR}/qbittorrent:/config
+      - ${MEDIA_DIR}/downloads/torrents:/downloads
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=Etc/UTC
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    labels:
+      homepage.group: Arr
+      homepage.name: qBittorrent
+      homepage.icon: qbittorrent.png
+      homepage.href: "http://torrent.${DOMAIN}"
+      homepage.description: "Torrent Client"

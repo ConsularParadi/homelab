@@ -1,0 +1,11 @@
+# docker-compose.yml
+# This file brings all your service definitions together.
+include:
+  - apps.yml
+  - arr.yml
+  - media.yml
+  - meta.yml
+  - network.yml
+networks:
+  proxy:
+    external: true

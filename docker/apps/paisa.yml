@@ -1,0 +1,17 @@
+services:
+  paisa:
+    restart: unless-stopped
+    networks:
+      - proxy
+    container_name: paisa
+    image: ananthakumaran/paisa:latest
+    ports:
+      - ${PAISA_PORT}:7500
+    volumes:
+      - "${CONFIG_DIR}/paisa:/root/Documents/paisa"
+    labels:
+      homepage.group: Apps
+      homepage.name: Paisa
+      homepage.icon: paisa.png
+      homepage.href: "http://money.${DOMAIN}"
+      homepage.description: "Personal Finance Manager"

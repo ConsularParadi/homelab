@@ -1,0 +1,18 @@
+services:
+  quartz:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: ${IP_ADDR}:31005/consular/quartz
+    container_name: quartz
+    ports:
+      - "${QUARTZ_PORT}:8080"
+      - "${QUARTZ_PORT_3001}:3001"
+    volumes:
+      - ${MEDIA_DIR}/notes:/usr/src/app/content
+    labels:
+      homepage.group: Apps
+      homepage.name: Quartz
+      homepage.icon: quartz.png
+      homepage.href: "http://notes.${DOMAIN}"
+      homepage.description: "Digital Garden"

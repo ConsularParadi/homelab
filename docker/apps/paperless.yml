@@ -1,0 +1,32 @@
+services:
+  paperless:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless-ngx
+    depends_on:
+      - paperless-redis
+    ports:
+      - "${PAPERLESS_PORT}:8000"
+    volumes:
+      - "${MEDIA_DIR}/docs:/usr/src/paperless/media"
+      - "${CONFIG_DIR}/paperless:/usr/src/paperless/data"
+      - "${CONFIG_DIR}/paperless/export:/usr/src/paperless/export"
+      - "${CONFIG_DIR}/paperless/consume:/usr/src/paperless/consume"
+    environment:
+      PAPERLESS_REDIS: redis://paperless-redis:6379
+    labels:
+      homepage.group: Apps
+      homepage.name: Paperless-NGX
+      homepage.icon: paperless-ngx.png
+      homepage.href: "http://docs.${DOMAIN}"
+      homepage.description: "Document Management System"
+  paperless-redis:
+    restart: unless-stopped
+    networks:
+      - proxy
+    image: docker.io/library/redis:8
+    container_name: paperless-redis
+    volumes:
+      - "${CONFIG_DIR}/paperless/redis:/data"
