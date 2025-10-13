@@ -1,0 +1,47 @@
+services:
+  wolf:
+    image: ghcr.io/games-on-whales/wolf:stable
+    container_name: wolf
+    environment:
+      - NVIDIA_DRIVER_VOLUME_NAME=nvidia-driver-vol
+      - WOLF_SOCKET_PATH=/var/run/wolf/wolf.sock
+      - WOLF_RENDER_NODE=/dev/dri/renderD129
+      - WOLF_LOG_LEVEL=DEBUG
+    volumes:
+      - ${CONFIG_DIR}/wolf:/etc/wolf:rw
+      - /var/run/wolf:/var/run/wolf
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /dev/:/dev/:rw
+      - /run/udev:/run/udev:rw
+      - nvidia-driver-vol:/usr/nvidia:rw
+    devices:
+      - /dev/dri
+      - /dev/uinput
+      - /dev/uhid
+      - /dev/nvidia-uvm
+      - /dev/nvidia-uvm-tools
+      - /dev/nvidia-caps/nvidia-cap1
+      - /dev/nvidia-caps/nvidia-cap2
+      - /dev/nvidiactl
+      - /dev/nvidia0
+      - /dev/nvidia-modeset
+    device_cgroup_rules:
+      - 'c 13:* rmw'
+    network_mode: host
+    restart: unless-stopped
+  wolfmanager:
+    image: ghcr.io/games-on-whales/wolfmanager/wolfmanager:latest
+    container_name: wolf-manager
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXTAUTH_URL=http://localhost:3000
+    volumes:
+      - /var/run/wolf:/var/run/wolf # Mount Wolf socket
+      - /var/run/docker.sock:/var/run/docker.sock # Mount Docker socket
+      - ${CONFIG_DIR}/wolf/wolfmanager:/app/config
+    restart: unless-stopped
+volumes:
+  nvidia-driver-vol:
+    external: true

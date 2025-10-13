@@ -1,0 +1,23 @@
+services:
+  audiobookshelf:
+    restart: unless-stopped
+    networks:
+      - proxy
+    container_name: audiobookshelf
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    ports:
+      - "${BOOKS_PORT}:80"
+    volumes:
+      - ${MEDIA_DIR}/audiobooks:/audiobooks:ro
+      - ${MEDIA_DIR}/podcasts:/podcasts:ro
+      - ${CONFIG_DIR}/audiobookshelf:/config
+      - ${CONFIG_DIR}/audiobookshelf/metadata:/metadata
+    environment:
+      - TZ=${TZ}
+    user: ${PUID}:${PGID}
+    labels:
+      homepage.group: Media
+      homepage.name: Audiobookshelf
+      homepage.icon: audiobookshelf.png
+      homepage.href: "http://books.${DOMAIN}"
+      homepage.description: "Books & Podcasts Server"

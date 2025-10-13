@@ -1,0 +1,20 @@
+services:
+  kasm:
+    image: lscr.io/linuxserver/kasm:latest
+    container_name: kasm
+    privileged: true
+    security_opt:
+      - apparmor:rootlesskit #optional
+    environment:
+      - KASM_PORT=${KASM_PORT}
+    volumes:
+      - ${CONFIG_DIR}/kasm/data:/opt
+      - ${CONFIG_DIR}/kasm/profiles:/profiles #optional
+      - /dev/input:/dev/input #optional
+      - /run/udev/data:/run/udev/data #optional
+    ports:
+      - ${KASM_SETUP_PORT}:3000
+      - ${KASM_PORT}:${KASM_PORT}
+    networks:
+      - proxy
+    restart: unless-stopped
