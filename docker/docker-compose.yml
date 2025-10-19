@@ -1,4 +1,9 @@
 # docker-compose.yml
 # This file brings all your service definitions together.
 include:
+  - apps/feishin.yml
+  - apps/beets.yml
   - apps/wolf.yml
+networks:
+  proxy:
+    external: true
