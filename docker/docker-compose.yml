@@ -2,6 +2,7 @@
 # This file brings all your service definitions together.
 include:
   - apps/feishin.yml
+  - apps/syncthing.yml
   - apps/beets.yml
   - apps/wolf.yml
 networks:
