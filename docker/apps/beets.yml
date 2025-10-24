@@ -1,0 +1,15 @@
+services:
+  beets:
+    image: pspitzner/beets-flask:stable
+    container_name: beets
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      TZ: Asia/Kolkata
+      USER_ID: 1000
+      GROUP_ID: 1000
+    volumes:
+      - ${CONFIG_DIR}/beets:/config
+      - ${MEDIA_DIR}/downloads/music:${MEDIA_DIR}/downloads/music
+      - ${MEDIA_DIR}/music:${MEDIA_DIR}/music

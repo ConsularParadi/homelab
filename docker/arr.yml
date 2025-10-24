@@ -1,5 +1,6 @@
 include:
   - apps/bazarr.yml
+  - apps/beets.yml
   - apps/jackett.yml
   - apps/jellyseerr.yml
   - apps/qbittorrent.yml

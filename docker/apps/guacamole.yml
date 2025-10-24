@@ -1,0 +1,10 @@
+# https://gist.github.com/dluciv/972cc07f081a0b926a3bb07102405dce
+services:
+  guacamole:
+    image: jwetzell/guacamole
+    container_name: guacamole
+    volumes:
+      - ${CONFIG_DIR}/guacmaole:/config
+    ports:
+      - 8080:8080
+    restart: unless-stopped
