@@ -5,6 +5,7 @@ include:
   - apps/syncthing.yml
   - apps/beets.yml
   - apps/wolf.yml
+  - apps/guacamole.yml
 networks:
   proxy:
     external: true

@@ -1,0 +1,9 @@
+services:
+  guacamole:
+    image: jwetzell/guacamole
+    container_name: guacamole
+    volumes:
+      - ${CONFIG_DIR}/guacmaole:/config
+    ports:
+      - 8080:8080
+    restart: unless-stopped
