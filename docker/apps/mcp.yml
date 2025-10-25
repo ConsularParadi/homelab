@@ -1,0 +1,13 @@
+name: mcp
+services:
+  playwright:
+    image: mcr.microsoft.com/playwright/mcp
+    container_name: playwright
+    stdin_open: true
+    init: true
+    pull_policy: always
+    entrypoint:
+      - node
+    ports:
+      - 8931:8931
+    command: cli.js --headless --browser chromium --allowed-hosts * --host 0.0.0.0 --no-sandbox --port 8931
