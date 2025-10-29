@@ -2,7 +2,8 @@
 # This file brings all your service definitions together.
 include:
   - apps/feishin.yml
-  - ai.yml
+  - apps/immich.yml
+  #- ai.yml
 networks:
   proxy:
     external: true
