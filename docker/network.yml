@@ -1,4 +1,4 @@
 include:
   - apps/gluetun.yml
-  - apps/npm.yml
+  #  - apps/npm.yml
   - apps/pihole.yml
