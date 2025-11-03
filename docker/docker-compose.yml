@@ -3,6 +3,7 @@
 include:
   - apps/feishin.yml
   - apps/immich.yml
+  - apps/caddy.yml
   #- ai.yml
 networks:
   proxy:
