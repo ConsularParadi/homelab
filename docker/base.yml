@@ -1,8 +1,8 @@
 include:
   - apps/git.yml
   - apps/portainer.yml
-
 networks:
   proxy:
-    # Specify driver options
+    name: proxy
     driver: bridge
+
