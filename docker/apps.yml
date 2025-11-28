@@ -1,4 +1,4 @@
 include:
   - apps/paisa.yml
   - apps/paperless.yml
-  - apps/vikunja.yml
+#  - apps/vikunja.yml
