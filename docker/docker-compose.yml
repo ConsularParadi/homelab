@@ -4,6 +4,7 @@ include:
   - apps/feishin.yml
   - apps/immich.yml
   - apps/caddy.yml
+  - apps/prowlarr.yml
   #- ai.yml
 networks:
   proxy:
